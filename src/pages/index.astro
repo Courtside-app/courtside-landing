@@ -10,274 +10,336 @@ const adminAppUrl = 'https://courtside-admin.vercel.app';
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content="Courtside — La plataforma de gestión para clubes de tenis y pádel. Reservas, torneos, academia y más." />
     <title>Courtside — Gestión de clubes de tenis y pádel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
       :root {
-        --green: #166534;
-        --green-light: #16a34a;
-        --green-subtle: #f0fdf4;
-        --text: #111827;
-        --text-muted: #6b7280;
-        --border: #e5e7eb;
-        --white: #ffffff;
+        --brand-navy:       #223D7E;
+        --brand-navy-600:   #1B3268;
+        --brand-navy-100:   #E8ECF5;
+        --brand-green:      #16A34A;
+        --brand-green-700:  #166534;
+        --brand-green-400:  #6DB84D;
+        --brand-green-100:  #DCFCE7;
+        --brand-green-50:   #F0FDF4;
+        --fg-1:             #0F172A;
+        --fg-2:             #334155;
+        --fg-3:             #64748B;
+        --fg-4:             #94A3B8;
+        --bg-1:             #FFFFFF;
+        --border-1:         #E5E7EB;
+        --border-2:         #CBD5E1;
+        --shadow-md:        0 4px 12px rgb(15 23 42 / 0.06), 0 2px 4px rgb(15 23 42 / 0.04);
+        --font-sans:        'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        color: var(--text);
+        font-family: var(--font-sans);
+        color: var(--fg-1);
+        background: var(--bg-1);
         line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        text-wrap: pretty;
       }
 
-      /* NAV */
-      nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem 2rem;
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        background: var(--white);
-        z-index: 10;
+      /* ── NAV ─────────────────────────────────────────────── */
+      .cs-nav {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.9rem 2rem;
+        background: rgba(34, 61, 126, 0.97);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        position: sticky; top: 0; z-index: 10;
       }
-      .logo { font-weight: 700; font-size: 1.25rem; color: var(--green); letter-spacing: -0.02em; }
-      .nav-cta {
-        background: var(--green);
-        color: var(--white);
-        padding: 0.5rem 1.25rem;
-        border-radius: 0.375rem;
-        text-decoration: none;
-        font-size: 0.875rem;
-        font-weight: 500;
+      .cs-logo {
+        display: inline-flex; align-items: center; gap: 9px;
+        text-decoration: none; font-weight: 800;
+        font-size: 1.15rem; letter-spacing: -0.02em;
       }
-      .nav-cta:hover { background: var(--green-light); }
+      .cs-logo img { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+      .cs-logo .court { color: #fff; }
+      .cs-logo .side  { color: var(--brand-green-400); }
+      .cs-nav-cta {
+        background: var(--brand-green); color: #fff;
+        padding: 0.5rem 1.25rem; border-radius: 6px;
+        text-decoration: none; font-size: 0.875rem; font-weight: 600;
+        transition: background 120ms;
+      }
+      .cs-nav-cta:hover { background: var(--brand-green-700); color: #fff; text-decoration: none; }
 
-      /* HERO */
-      .hero {
+      /* ── HERO ────────────────────────────────────────────── */
+      .cs-hero {
+        background: var(--brand-navy);
+        padding: 5.5rem 2rem 5rem;
         text-align: center;
-        padding: 5rem 2rem 4rem;
-        max-width: 720px;
-        margin: 0 auto;
       }
-      .hero-badge {
+      .cs-hero-inner { max-width: 720px; margin: 0 auto; }
+      .cs-hero-badge {
         display: inline-block;
-        background: var(--green-subtle);
-        color: var(--green);
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.25rem 0.75rem;
-        border-radius: 999px;
-        margin-bottom: 1.5rem;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        font-size: 0.75rem; font-weight: 700;
+        padding: 0.3rem 0.9rem; border-radius: 999px;
+        margin-bottom: 1.75rem;
+        letter-spacing: 0.08em; text-transform: uppercase;
       }
-      .hero h1 {
-        font-size: clamp(2rem, 5vw, 3.25rem);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        line-height: 1.15;
-        margin-bottom: 1.25rem;
-        color: var(--text);
+      .cs-hero-h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800; letter-spacing: -0.03em; line-height: 1.12;
+        margin-bottom: 1.25rem; color: #fff;
       }
-      .hero h1 span { color: var(--green); }
-      .hero p {
-        font-size: 1.125rem;
-        color: var(--text-muted);
-        max-width: 540px;
-        margin: 0 auto 2.5rem;
+      .cs-hero-h1 span { color: var(--brand-green-400); }
+      .cs-hero-p {
+        font-size: 1.125rem; color: #CBD5E1;
+        max-width: 540px; margin: 0 auto 2.5rem; line-height: 1.6;
       }
-      .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-      .btn-primary {
-        background: var(--green);
-        color: var(--white);
-        padding: 0.75rem 2rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
+      .cs-hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+      .cs-btn-primary {
+        background: var(--brand-green); color: #fff;
+        padding: 0.85rem 2rem; border-radius: 8px;
+        text-decoration: none; font-weight: 600; font-size: 1rem;
+        transition: background 120ms, transform 120ms;
       }
-      .btn-primary:hover { background: var(--green-light); }
-      .btn-secondary {
-        border: 1px solid var(--border);
-        color: var(--text);
-        padding: 0.75rem 2rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 1rem;
+      .cs-btn-primary:hover { background: var(--brand-green-700); color: #fff; text-decoration: none; transform: translateY(-1px); }
+      .cs-btn-secondary {
+        border: 1px solid rgba(255, 255, 255, 0.3); color: #fff;
+        padding: 0.85rem 2rem; border-radius: 8px;
+        text-decoration: none; font-weight: 500; font-size: 1rem;
+        transition: all 120ms; background: transparent;
       }
-      .btn-secondary:hover { border-color: var(--green); color: var(--green); }
+      .cs-btn-secondary:hover { border-color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.08); color: #fff; text-decoration: none; }
 
-      /* FEATURES */
-      .features {
-        background: var(--green-subtle);
-        padding: 5rem 2rem;
+      /* ── FEATURES ────────────────────────────────────────── */
+      .cs-features { background: var(--brand-green-50); padding: 5rem 2rem; }
+      .cs-features-inner { max-width: 1000px; margin: 0 auto; }
+      .cs-section-label {
+        text-align: center; font-size: 0.75rem; font-weight: 700;
+        letter-spacing: 0.1em; text-transform: uppercase;
+        color: var(--brand-green-700); margin-bottom: 0.75rem;
       }
-      .features-inner { max-width: 1000px; margin: 0 auto; }
-      .section-label {
-        text-align: center;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--green);
-        margin-bottom: 0.75rem;
-      }
-      .section-title {
+      .cs-section-title {
         text-align: center;
         font-size: clamp(1.5rem, 3vw, 2.25rem);
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        margin-bottom: 3rem;
+        font-weight: 700; letter-spacing: -0.02em;
+        margin-bottom: 3rem; color: var(--fg-1);
       }
-      .features-grid {
+      .cs-features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 1.5rem;
       }
-      .feature-card {
-        background: var(--white);
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        border: 1px solid var(--border);
+      .cs-feature-card {
+        background: #fff; border-radius: 12px; padding: 1.5rem;
+        border: 1px solid var(--border-1);
+        transition: transform 120ms, box-shadow 120ms;
       }
-      .feature-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
-      .feature-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
-      .feature-card p { font-size: 0.875rem; color: var(--text-muted); }
+      .cs-feature-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+      .cs-feature-icon {
+        width: 40px; height: 40px; border-radius: 10px;
+        background: var(--brand-green-50); color: var(--brand-green-700);
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 0.85rem;
+      }
+      .cs-feature-icon svg { width: 22px; height: 22px; }
+      .cs-feature-card h3 { font-size: 1rem; font-weight: 600; margin: 0 0 0.4rem; color: var(--fg-1); }
+      .cs-feature-card p  { font-size: 0.875rem; color: var(--fg-3); margin: 0; line-height: 1.5; }
 
-      /* TWO-APP SECTION */
-      .apps-section { padding: 5rem 2rem; }
-      .apps-inner {
-        max-width: 900px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
+      /* ── TWO APPS ────────────────────────────────────────── */
+      .cs-apps-section { padding: 5rem 2rem; }
+      .cs-apps-head { max-width: 900px; margin: 0 auto 2rem; }
+      .cs-apps-inner {
+        max-width: 900px; margin: 0 auto;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
       }
-      @media (max-width: 600px) { .apps-inner { grid-template-columns: 1fr; } }
-      .app-card {
-        border: 1px solid var(--border);
-        border-radius: 0.75rem;
-        padding: 2rem;
+      @media (max-width: 600px) { .cs-apps-inner { grid-template-columns: 1fr; } }
+      .cs-app-card { border: 1px solid var(--border-1); border-radius: 14px; padding: 2rem; background: #fff; }
+      .cs-app-card.cs-app-navy {
+        background: linear-gradient(160deg, var(--brand-navy) 0%, var(--brand-navy-600) 100%);
+        border-color: var(--brand-navy); color: #fff;
       }
-      .app-card.green { background: var(--green); color: var(--white); border-color: var(--green); }
-      .app-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
-      .app-card p { font-size: 0.9rem; opacity: 0.85; margin-bottom: 1.25rem; }
-      .app-card ul { list-style: none; }
-      .app-card ul li { font-size: 0.875rem; padding: 0.2rem 0; }
-      .app-card ul li::before { content: "✓  "; font-weight: 700; }
-      .app-card.green ul li::before { color: #86efac; }
-      .app-card:not(.green) ul li::before { color: var(--green); }
+      .cs-app-card h3 { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; }
+      .cs-app-card > p { font-size: 0.9rem; opacity: 0.85; margin: 0 0 1.25rem; }
+      .cs-app-card ul { list-style: none; padding: 0; margin: 0; }
+      .cs-app-card ul li { font-size: 0.875rem; padding: 0.22rem 0; display: flex; align-items: center; gap: 8px; }
+      .cs-app-card ul li::before { content: "✓"; font-weight: 700; flex: none; }
+      .cs-app-card.cs-app-navy ul li::before { color: var(--brand-green-400); }
+      .cs-app-card:not(.cs-app-navy) ul li::before { color: var(--brand-green); }
 
-      /* PRICING */
-      .pricing { background: var(--green-subtle); padding: 5rem 2rem; }
-      .pricing-inner { max-width: 420px; margin: 0 auto; text-align: center; }
-      .price-card {
-        background: var(--white);
-        border: 2px solid var(--green);
-        border-radius: 1rem;
-        padding: 2.5rem 2rem;
-        margin-top: 2rem;
+      /* ── PRICING ─────────────────────────────────────────── */
+      .cs-pricing { background: var(--brand-green-50); padding: 5rem 2rem; }
+      .cs-pricing-inner { max-width: 440px; margin: 0 auto; text-align: center; }
+      .cs-price-card {
+        background: #fff; border: 2px solid var(--brand-green);
+        border-radius: 16px; padding: 2.5rem 2rem; margin-top: 1.5rem;
+        box-shadow: 0 24px 48px rgba(22, 101, 52, 0.08);
       }
-      .price-tag { font-size: 3rem; font-weight: 800; color: var(--green); letter-spacing: -0.04em; }
-      .price-tag span { font-size: 1.25rem; font-weight: 500; color: var(--text-muted); }
-      .price-desc { color: var(--text-muted); font-size: 0.875rem; margin: 0.5rem 0 1.5rem; }
-      .price-features { list-style: none; text-align: left; margin-bottom: 2rem; }
-      .price-features li { padding: 0.35rem 0; font-size: 0.875rem; }
-      .price-features li::before { content: "✓  "; color: var(--green); font-weight: 700; }
-      .btn-full {
-        display: block;
-        background: var(--green);
-        color: var(--white);
-        padding: 0.875rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        text-align: center;
+      .cs-price-tag { font-size: 3rem; font-weight: 800; color: var(--brand-green-700); letter-spacing: -0.04em; }
+      .cs-price-tag span { font-size: 1.15rem; font-weight: 500; color: var(--fg-3); }
+      .cs-price-desc { color: var(--fg-3); font-size: 0.875rem; margin: 0.5rem 0 1.5rem; }
+      .cs-price-features { list-style: none; text-align: left; margin: 0 0 2rem; padding: 0; }
+      .cs-price-features li {
+        padding: 0.38rem 0; font-size: 0.9rem; color: var(--fg-2);
+        display: flex; align-items: center; gap: 10px;
       }
-      .btn-full:hover { background: var(--green-light); }
+      .cs-price-features li::before { content: "✓"; color: var(--brand-green); font-weight: 700; }
+      .cs-btn-full {
+        display: block; background: var(--brand-green); color: #fff;
+        padding: 0.875rem; border-radius: 8px;
+        text-decoration: none; font-weight: 600; font-size: 1rem;
+        text-align: center; transition: background 120ms;
+      }
+      .cs-btn-full:hover { background: var(--brand-green-700); color: #fff; text-decoration: none; }
 
-      /* FOOTER */
-      footer {
-        text-align: center;
-        padding: 2rem;
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        border-top: 1px solid var(--border);
+      /* ── FOOTER ──────────────────────────────────────────── */
+      .cs-footer { border-top: 1px solid var(--border-1); padding: 2rem; background: #fff; }
+      .cs-footer-inner {
+        max-width: 1000px; margin: 0 auto;
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 1rem; flex-wrap: wrap;
       }
+      .cs-footer-logo {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-weight: 800; font-size: 1rem; letter-spacing: -0.02em;
+        opacity: 0.85;
+      }
+      .cs-footer-logo img { width: 22px; height: 22px; }
+      .cs-footer-logo .court { color: var(--brand-navy); }
+      .cs-footer-logo .side  { color: var(--brand-green-400); }
+      .cs-footer p { font-size: 0.8rem; color: var(--fg-3); margin: 0; }
     </style>
   </head>
   <body>
 
-    <nav>
-      <span class="logo">Courtside</span>
-      <a href={adminAppUrl} class="nav-cta">Comenzar gratis →</a>
+    <!-- NAV -->
+    <nav class="cs-nav">
+      <a href="/" class="cs-logo">
+        <img src="/logo-courtside-mark.svg" alt="" />
+        <span><span class="court">COURT</span><span class="side">SIDE</span></span>
+      </a>
+      <a href={adminAppUrl} class="cs-nav-cta">Comenzar gratis →</a>
     </nav>
 
     <!-- HERO -->
-    <section class="hero">
-      <span class="hero-badge">Para clubes de tenis y pádel</span>
-      <h1>Gestioná tu club<br /><span>sin complicaciones</span></h1>
-      <p>
-        Reservas online, gestión de socios, academia, torneos y más.
-        Todo desde un panel web. Tus jugadores lo usan desde el celular.
-      </p>
-      <div class="hero-actions">
-        <a href={adminAppUrl} class="btn-primary">Probalo gratis</a>
-        <a href="#features" class="btn-secondary">Ver funciones</a>
-      </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="features" id="features">
-      <div class="features-inner">
-        <p class="section-label">Funcionalidades</p>
-        <h2 class="section-title">Todo lo que tu club necesita</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🎾</div>
-            <h3>Reservas de canchas</h3>
-            <p>Tus jugadores reservan desde el celular en segundos. Sin llamados, sin WhatsApps.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">👥</div>
-            <h3>Gestión de socios</h3>
-            <p>Alta de jugadores por invitación, roles diferenciados, historial de pagos.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🏫</div>
-            <h3>Academia</h3>
-            <p>Grupos de entrenamiento, asistencia, clases privadas con tus profesores.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">🏆</div>
-            <h3>Torneos</h3>
-            <p>Organización de torneos con brackets automáticos, resultados y seguimiento.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <h3>Dashboard</h3>
-            <p>Visión en tiempo real de ocupación de canchas, ingresos y actividad del club.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📲</div>
-            <h3>App PWA para jugadores</h3>
-            <p>Se instala en el celular sin pasar por el App Store. Lista en segundos.</p>
-          </div>
+    <section class="cs-hero">
+      <div class="cs-hero-inner">
+        <span class="cs-hero-badge">Para clubes de tenis y pádel</span>
+        <h1 class="cs-hero-h1">Gestioná tu club<br /><span>sin complicaciones</span></h1>
+        <p class="cs-hero-p">
+          Reservas online, gestión de socios, academia, torneos y más.
+          Todo desde un panel web. Tus jugadores lo usan desde el celular.
+        </p>
+        <div class="cs-hero-actions">
+          <a href={adminAppUrl} class="cs-btn-primary">Probalo gratis</a>
+          <a href="#features" class="cs-btn-secondary">Ver funciones</a>
         </div>
       </div>
     </section>
 
-    <!-- TWO-APP SECTION -->
-    <section class="apps-section">
-      <div class="features-inner" style="max-width:900px;margin:0 auto;">
-        <p class="section-label" style="text-align:center;">Dos aplicaciones</p>
-        <h2 class="section-title">Una para vos, una para tus jugadores</h2>
+    <!-- FEATURES -->
+    <section class="cs-features" id="features">
+      <div class="cs-features-inner">
+        <p class="cs-section-label">Funcionalidades</p>
+        <h2 class="cs-section-title">Todo lo que tu club necesita</h2>
+        <div class="cs-features-grid">
+
+          <div class="cs-feature-card">
+            <div class="cs-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="4" rx="2"/>
+                <line x1="16" x2="16" y1="2" y2="6"/>
+                <line x1="8" x2="8" y1="2" y2="6"/>
+                <line x1="3" x2="21" y1="10" y2="10"/>
+                <circle cx="8" cy="14" r="1" fill="currentColor"/>
+                <circle cx="12" cy="14" r="1" fill="currentColor"/>
+                <circle cx="16" cy="14" r="1" fill="currentColor"/>
+                <circle cx="8" cy="18" r="1" fill="currentColor"/>
+                <circle cx="12" cy="18" r="1" fill="currentColor"/>
+              </svg>
+            </div>
+            <h3>Reservas de canchas</h3>
+            <p>Tus jugadores reservan desde el celular en segundos. Sin llamados, sin WhatsApps.</p>
+          </div>
+
+          <div class="cs-feature-card">
+            <div class="cs-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <h3>Gestión de socios</h3>
+            <p>Alta de jugadores por invitación, roles diferenciados, historial de pagos.</p>
+          </div>
+
+          <div class="cs-feature-card">
+            <div class="cs-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+            </div>
+            <h3>Academia</h3>
+            <p>Grupos de entrenamiento, asistencia, clases privadas con tus profesores.</p>
+          </div>
+
+          <div class="cs-feature-card">
+            <div class="cs-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                <path d="M4 22h16"/>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
+              </svg>
+            </div>
+            <h3>Torneos</h3>
+            <p>Organización de torneos con brackets automáticos, resultados y seguimiento.</p>
+          </div>
+
+          <div class="cs-feature-card">
+            <div class="cs-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v18h18"/>
+                <path d="M18 17V9"/>
+                <path d="M13 17V5"/>
+                <path d="M8 17v-3"/>
+              </svg>
+            </div>
+            <h3>Dashboard</h3>
+            <p>Visión en tiempo real de ocupación de canchas, ingresos y actividad del club.</p>
+          </div>
+
+          <div class="cs-feature-card">
+            <div class="cs-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="14" height="20" x="5" y="2" rx="2"/>
+                <path d="M12 18h.01"/>
+              </svg>
+            </div>
+            <h3>App PWA para jugadores</h3>
+            <p>Se instala en el celular sin pasar por el App Store. Lista en segundos.</p>
+          </div>
+
+        </div>
       </div>
-      <div class="apps-inner">
-        <div class="app-card green">
+    </section>
+
+    <!-- TWO APPS -->
+    <section class="cs-apps-section">
+      <div class="cs-apps-head">
+        <p class="cs-section-label">Dos aplicaciones</p>
+        <h2 class="cs-section-title">Una para vos, una para tus jugadores</h2>
+      </div>
+      <div class="cs-apps-inner">
+
+        <div class="cs-app-card cs-app-navy">
           <h3>Panel de administrador</h3>
           <p>Para el dueño y staff del club. Accedé desde cualquier computadora.</p>
           <ul>
@@ -288,7 +350,8 @@ const adminAppUrl = 'https://courtside-admin.vercel.app';
             <li>Configuración del club</li>
           </ul>
         </div>
-        <div class="app-card">
+
+        <div class="cs-app-card">
           <h3>App para jugadores</h3>
           <p>Se descarga desde la invitación del club. Funciona offline.</p>
           <ul>
@@ -299,31 +362,39 @@ const adminAppUrl = 'https://courtside-admin.vercel.app';
             <li>Perfil personal</li>
           </ul>
         </div>
+
       </div>
     </section>
 
     <!-- PRICING -->
-    <section class="pricing" id="pricing">
-      <div class="pricing-inner">
-        <p class="section-label">Precio</p>
-        <h2 class="section-title">Simple y predecible</h2>
-        <div class="price-card">
-          <div class="price-tag">USD 50<span>/mes</span></div>
-          <p class="price-desc">Por club. Sin límite de usuarios ni canchas.</p>
-          <ul class="price-features">
+    <section class="cs-pricing" id="pricing">
+      <div class="cs-pricing-inner">
+        <p class="cs-section-label">Precio</p>
+        <h2 class="cs-section-title">Simple y predecible</h2>
+        <div class="cs-price-card">
+          <div class="cs-price-tag">USD 50<span>/mes</span></div>
+          <p class="cs-price-desc">Por club. Sin límite de usuarios ni canchas.</p>
+          <ul class="cs-price-features">
             <li>Reservas ilimitadas</li>
             <li>Socios ilimitados</li>
             <li>Academia y torneos incluidos</li>
             <li>App PWA para jugadores</li>
             <li>Soporte por WhatsApp</li>
           </ul>
-          <a href={adminAppUrl} class="btn-full">Empezar ahora →</a>
+          <a href={adminAppUrl} class="cs-btn-full">Empezar ahora →</a>
         </div>
       </div>
     </section>
 
-    <footer>
-      <p>© {new Date().getFullYear()} Courtside. Hecho para clubes de raqueta.</p>
+    <!-- FOOTER -->
+    <footer class="cs-footer">
+      <div class="cs-footer-inner">
+        <div class="cs-footer-logo">
+          <img src="/logo-courtside-mark.svg" alt="" />
+          <span><span class="court">COURT</span><span class="side">SIDE</span></span>
+        </div>
+        <p>© {new Date().getFullYear()} Courtside. Hecho para clubes de raqueta.</p>
+      </div>
     </footer>
 
   </body>
