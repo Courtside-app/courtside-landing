@@ -1,401 +1,366 @@
 ---
-const adminAppUrl = 'https://courtside-admin.vercel.app';
+// ── Configuración de contacto y destino ──────────────────────────────────
+// El onboarding es asistido (uno por uno): la landing no manda a registrarse,
+// manda a hablar. Completar antes de publicar:
+//   contactWhatsApp: número en formato internacional sin "+", p. ej. "5491155551234"
+//   contactEmail:    casilla del proyecto en el dominio propio
+//   adminAppUrl:     URL del panel (login) una vez desplegado
+const contactWhatsApp = '';
+const contactEmail = '';
+const adminAppUrl = 'https://app.courtside.com.ar/login';
+
+const demoMessage = encodeURIComponent(
+  'Hola, administro un club de tenis/pádel y quiero ver Courtside funcionando.',
+);
+const demoHref = contactWhatsApp
+  ? `https://wa.me/${contactWhatsApp}?text=${demoMessage}`
+  : contactEmail
+    ? `mailto:${contactEmail}?subject=${encodeURIComponent('Quiero ver Courtside')}`
+    : '#contacto';
+
+const year = new Date().getFullYear();
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content="Courtside — La plataforma de gestión para clubes de tenis y pádel. Reservas, torneos, academia y más." />
-    <title>Courtside — Gestión de clubes de tenis y pádel</title>
+    <meta
+      name="description"
+      content="Courtside: gestión y analítica para clubes de tenis y pádel. Reservas, caja, socios, profesores, academia y torneos en un solo lugar, y un panel que te dice cómo va el club."
+    />
+    <meta property="og:title" content="Courtside — Sabé cómo va tu club" />
+    <meta
+      property="og:description"
+      content="Gestión y analítica para clubes de tenis y pádel. Cada mañana, una frase sobre cómo viene el mes y qué hay que resolver."
+    />
+    <meta property="og:type" content="website" />
+    <title>Courtside — Gestión y analítica para clubes de tenis y pádel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      /* Mismo sistema que el panel: negro, un solo acento naranja, hairlines,
+         radios chicos, números tabulares. El color marca lo accionable. */
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
       :root {
-        --brand-navy:       #223D7E;
-        --brand-navy-600:   #1B3268;
-        --brand-navy-100:   #E8ECF5;
-        --brand-green:      #16A34A;
-        --brand-green-700:  #166534;
-        --brand-green-400:  #6DB84D;
-        --brand-green-100:  #DCFCE7;
-        --brand-green-50:   #F0FDF4;
-        --fg-1:             #0F172A;
-        --fg-2:             #334155;
-        --fg-3:             #64748B;
-        --fg-4:             #94A3B8;
-        --bg-1:             #FFFFFF;
-        --border-1:         #E5E7EB;
-        --border-2:         #CBD5E1;
-        --shadow-md:        0 4px 12px rgb(15 23 42 / 0.06), 0 2px 4px rgb(15 23 42 / 0.04);
-        --font-sans:        'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --bg: #ffffff;
+        --surface: #fafafa;
+        --surface2: #f3f3f2;
+        --border: #e6e6e4;
+        --hair: #ededeb;
+        --ink: #0a0a0a;
+        --ink2: #3d3d3b;
+        --muted: #7a7a76;
+        --accent: #e2683a;
+        --accent-ink: #b84f26;
+        --accent-soft: rgba(226, 104, 58, 0.12);
+        --track: #e9e9e7;
+        --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0a0a0a;
+          --surface: #121211;
+          --surface2: #1a1a19;
+          --border: #262625;
+          --hair: #1f1f1e;
+          --ink: #f2f2f0;
+          --ink2: #c9c9c5;
+          --muted: #8a8a86;
+          --accent: #e2683a;
+          --accent-ink: #f08a62;
+          --accent-soft: rgba(226, 104, 58, 0.18);
+          --track: #2a2a29;
+        }
       }
 
+      html { scroll-behavior: smooth; }
       body {
-        font-family: var(--font-sans);
-        color: var(--fg-1);
-        background: var(--bg-1);
+        font-family: var(--font);
+        color: var(--ink);
+        background: var(--bg);
         line-height: 1.5;
         -webkit-font-smoothing: antialiased;
         text-wrap: pretty;
+        font-variant-numeric: tabular-nums;
       }
+      a { color: inherit; }
+      .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+      .eyebrow {
+        font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem;
+      }
+      h2 { font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 0.5rem; }
+      .lead { color: var(--ink2); font-size: 1.05rem; max-width: 60ch; }
 
       /* ── NAV ─────────────────────────────────────────────── */
-      .cs-nav {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0.9rem 2rem;
-        background: rgba(34, 61, 126, 0.97);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+      .nav {
         position: sticky; top: 0; z-index: 10;
+        background: color-mix(in srgb, var(--bg) 92%, transparent);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hair);
       }
-      .cs-logo {
-        display: inline-flex; align-items: center; gap: 9px;
-        text-decoration: none; font-weight: 800;
-        font-size: 1.15rem; letter-spacing: -0.02em;
+      .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+      .logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; }
+      .logo img { width: 26px; height: 26px; }
+      .logo .side { color: var(--accent); }
+      .nav-links { display: flex; gap: 1.25rem; align-items: center; font-size: 0.9rem; }
+      .nav-links a { text-decoration: none; color: var(--ink2); }
+      .nav-links a:hover { color: var(--ink); }
+      @media (max-width: 640px) { .nav-links .hide-sm { display: none; } }
+
+      .btn {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        padding: 0.6rem 1.1rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem;
+        text-decoration: none; border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+        transition: background 120ms, border-color 120ms;
       }
-      .cs-logo img { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
-      .cs-logo .court { color: #fff; }
-      .cs-logo .side  { color: var(--brand-green-400); }
-      .cs-nav-cta {
-        background: var(--brand-green); color: #fff;
-        padding: 0.5rem 1.25rem; border-radius: 6px;
-        text-decoration: none; font-size: 0.875rem; font-weight: 600;
-        transition: background 120ms;
-      }
-      .cs-nav-cta:hover { background: var(--brand-green-700); color: #fff; text-decoration: none; }
+      .btn:hover { background: var(--surface2); }
+      .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .btn-primary:hover { background: var(--accent-ink); border-color: var(--accent-ink); }
+      .btn-lg { padding: 0.8rem 1.4rem; font-size: 1rem; }
 
       /* ── HERO ────────────────────────────────────────────── */
-      .cs-hero {
-        background: var(--brand-navy);
-        padding: 5.5rem 2rem 5rem;
-        text-align: center;
-      }
-      .cs-hero-inner { max-width: 720px; margin: 0 auto; }
-      .cs-hero-badge {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.1);
-        color: #e2e8f0;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        font-size: 0.75rem; font-weight: 700;
-        padding: 0.3rem 0.9rem; border-radius: 999px;
-        margin-bottom: 1.75rem;
-        letter-spacing: 0.08em; text-transform: uppercase;
-      }
-      .cs-hero-h1 {
-        font-size: clamp(2rem, 5vw, 3.5rem);
-        font-weight: 800; letter-spacing: -0.03em; line-height: 1.12;
-        margin-bottom: 1.25rem; color: #fff;
-      }
-      .cs-hero-h1 span { color: var(--brand-green-400); }
-      .cs-hero-p {
-        font-size: 1.125rem; color: #CBD5E1;
-        max-width: 540px; margin: 0 auto 2.5rem; line-height: 1.6;
-      }
-      .cs-hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-      .cs-btn-primary {
-        background: var(--brand-green); color: #fff;
-        padding: 0.85rem 2rem; border-radius: 8px;
-        text-decoration: none; font-weight: 600; font-size: 1rem;
-        transition: background 120ms, transform 120ms;
-      }
-      .cs-btn-primary:hover { background: var(--brand-green-700); color: #fff; text-decoration: none; transform: translateY(-1px); }
-      .cs-btn-secondary {
-        border: 1px solid rgba(255, 255, 255, 0.3); color: #fff;
-        padding: 0.85rem 2rem; border-radius: 8px;
-        text-decoration: none; font-weight: 500; font-size: 1rem;
-        transition: all 120ms; background: transparent;
-      }
-      .cs-btn-secondary:hover { border-color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.08); color: #fff; text-decoration: none; }
+      .hero { padding: 5rem 0 3.5rem; }
+      .hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; max-width: 18ch; }
+      .hero h1 span { color: var(--accent); }
+      .hero .lead { margin: 1.25rem 0 2rem; font-size: 1.15rem; }
+      .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+      .hero-note { margin-top: 1rem; font-size: 0.85rem; color: var(--muted); }
 
-      /* ── FEATURES ────────────────────────────────────────── */
-      .cs-features { background: var(--brand-green-50); padding: 5rem 2rem; }
-      .cs-features-inner { max-width: 1000px; margin: 0 auto; }
-      .cs-section-label {
-        text-align: center; font-size: 0.75rem; font-weight: 700;
-        letter-spacing: 0.1em; text-transform: uppercase;
-        color: var(--brand-green-700); margin-bottom: 0.75rem;
+      /* Veredicto: la pantalla que el dueño ve cada mañana, como texto real. */
+      .verdict {
+        margin-top: 3rem; border: 1px solid var(--border); border-radius: 7px;
+        background: var(--surface); overflow: hidden;
       }
-      .cs-section-title {
-        text-align: center;
-        font-size: clamp(1.5rem, 3vw, 2.25rem);
-        font-weight: 700; letter-spacing: -0.02em;
-        margin-bottom: 3rem; color: var(--fg-1);
+      .verdict-bar {
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        padding: 0.6rem 1rem; border-bottom: 1px solid var(--hair);
+        font-size: 0.78rem; color: var(--muted);
       }
-      .cs-features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 1.5rem;
+      .verdict-bar b { color: var(--ink2); font-weight: 600; }
+      .verdict-body { padding: 1.25rem 1rem 1rem; }
+      .verdict-body .eyebrow { margin-bottom: 0.4rem; }
+      .verdict-body h3 { font-size: clamp(1.15rem, 2.4vw, 1.5rem); letter-spacing: -0.02em; line-height: 1.2; }
+      .verdict-body p { color: var(--ink2); margin-top: 0.35rem; font-size: 0.95rem; }
+      .kpis { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--hair); }
+      .kpi { padding: 0.9rem 1rem; border-right: 1px solid var(--hair); }
+      .kpi:last-child { border-right: 0; }
+      .kpi .k { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .kpi .v { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 0.15rem; }
+      .kpi .d { font-size: 0.75rem; color: var(--muted); }
+      .kpi .neg { color: var(--accent-ink); }
+      .todo { border-top: 1px solid var(--hair); }
+      .todo-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--hair); font-size: 0.9rem; }
+      .todo-row:last-child { border-bottom: 0; }
+      .todo-row small { display: block; color: var(--muted); font-size: 0.8rem; }
+      .todo-row .act { color: var(--accent-ink); font-weight: 600; white-space: nowrap; }
+      @media (max-width: 640px) {
+        .kpis { grid-template-columns: repeat(2, 1fr); }
+        .kpi:nth-child(2) { border-right: 0; }
+        .kpi:nth-child(-n + 2) { border-bottom: 1px solid var(--hair); }
       }
-      .cs-feature-card {
-        background: #fff; border-radius: 12px; padding: 1.5rem;
-        border: 1px solid var(--border-1);
-        transition: transform 120ms, box-shadow 120ms;
-      }
-      .cs-feature-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-      .cs-feature-icon {
-        width: 40px; height: 40px; border-radius: 10px;
-        background: var(--brand-green-50); color: var(--brand-green-700);
-        display: flex; align-items: center; justify-content: center;
-        margin-bottom: 0.85rem;
-      }
-      .cs-feature-icon svg { width: 22px; height: 22px; }
-      .cs-feature-card h3 { font-size: 1rem; font-weight: 600; margin: 0 0 0.4rem; color: var(--fg-1); }
-      .cs-feature-card p  { font-size: 0.875rem; color: var(--fg-3); margin: 0; line-height: 1.5; }
 
-      /* ── TWO APPS ────────────────────────────────────────── */
-      .cs-apps-section { padding: 5rem 2rem; }
-      .cs-apps-head { max-width: 900px; margin: 0 auto 2rem; }
-      .cs-apps-inner {
-        max-width: 900px; margin: 0 auto;
-        display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
-      }
-      @media (max-width: 600px) { .cs-apps-inner { grid-template-columns: 1fr; } }
-      .cs-app-card { border: 1px solid var(--border-1); border-radius: 14px; padding: 2rem; background: #fff; }
-      .cs-app-card.cs-app-navy {
-        background: linear-gradient(160deg, var(--brand-navy) 0%, var(--brand-navy-600) 100%);
-        border-color: var(--brand-navy); color: #fff;
-      }
-      .cs-app-card h3 { font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; }
-      .cs-app-card > p { font-size: 0.9rem; opacity: 0.85; margin: 0 0 1.25rem; }
-      .cs-app-card ul { list-style: none; padding: 0; margin: 0; }
-      .cs-app-card ul li { font-size: 0.875rem; padding: 0.22rem 0; display: flex; align-items: center; gap: 8px; }
-      .cs-app-card ul li::before { content: "✓"; font-weight: 700; flex: none; }
-      .cs-app-card.cs-app-navy ul li::before { color: var(--brand-green-400); }
-      .cs-app-card:not(.cs-app-navy) ul li::before { color: var(--brand-green); }
+      /* ── SECCIONES ───────────────────────────────────────── */
+      section { padding: 4.5rem 0; }
+      section + section { border-top: 1px solid var(--hair); }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--hair); border: 1px solid var(--hair); border-radius: 7px; overflow: hidden; margin-top: 2rem; }
+      .cell { background: var(--bg); padding: 1.25rem; }
+      .cell h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
+      .cell p { font-size: 0.9rem; color: var(--ink2); }
+      .cell .tag { display: inline-block; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft); padding: 0.15rem 0.45rem; border-radius: 4px; margin-bottom: 0.6rem; }
+      @media (max-width: 860px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 560px) { .grid-3 { grid-template-columns: 1fr; } }
 
-      /* ── PRICING ─────────────────────────────────────────── */
-      .cs-pricing { background: var(--brand-green-50); padding: 5rem 2rem; }
-      .cs-pricing-inner { max-width: 440px; margin: 0 auto; text-align: center; }
-      .cs-price-card {
-        background: #fff; border: 2px solid var(--brand-green);
-        border-radius: 16px; padding: 2.5rem 2rem; margin-top: 1.5rem;
-        box-shadow: 0 24px 48px rgba(22, 101, 52, 0.08);
+      .questions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2.5rem; margin-top: 2rem; }
+      .q { border-left: 2px solid var(--accent); padding-left: 1rem; }
+      .q b { display: block; font-size: 1.05rem; letter-spacing: -0.01em; }
+      .q span { color: var(--ink2); font-size: 0.92rem; }
+      @media (max-width: 640px) { .questions { grid-template-columns: 1fr; } }
+
+      .steps { counter-reset: s; margin-top: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+      .step { position: relative; padding-top: 2.4rem; }
+      .step::before {
+        counter-increment: s; content: counter(s);
+        position: absolute; top: 0; left: 0; width: 1.8rem; height: 1.8rem;
+        border-radius: 999px; background: var(--ink); color: var(--bg);
+        display: grid; place-items: center; font-weight: 700; font-size: 0.85rem;
       }
-      .cs-price-tag { font-size: 3rem; font-weight: 800; color: var(--brand-green-700); letter-spacing: -0.04em; }
-      .cs-price-tag span { font-size: 1.15rem; font-weight: 500; color: var(--fg-3); }
-      .cs-price-desc { color: var(--fg-3); font-size: 0.875rem; margin: 0.5rem 0 1.5rem; }
-      .cs-price-features { list-style: none; text-align: left; margin: 0 0 2rem; padding: 0; }
-      .cs-price-features li {
-        padding: 0.38rem 0; font-size: 0.9rem; color: var(--fg-2);
-        display: flex; align-items: center; gap: 10px;
-      }
-      .cs-price-features li::before { content: "✓"; color: var(--brand-green); font-weight: 700; }
-      .cs-btn-full {
-        display: block; background: var(--brand-green); color: #fff;
-        padding: 0.875rem; border-radius: 8px;
-        text-decoration: none; font-weight: 600; font-size: 1rem;
-        text-align: center; transition: background 120ms;
-      }
-      .cs-btn-full:hover { background: var(--brand-green-700); color: #fff; text-decoration: none; }
+      .step h3 { font-size: 1rem; margin-bottom: 0.3rem; }
+      .step p { color: var(--ink2); font-size: 0.92rem; }
+      @media (max-width: 720px) { .steps { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+      /* ── PRECIO ──────────────────────────────────────────── */
+      .price { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2.5rem; align-items: start; margin-top: 2rem; }
+      .price-card { border: 1px solid var(--border); border-radius: 7px; background: var(--surface); padding: 1.5rem; }
+      .price-card .amount { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em; }
+      .price-card .amount small { font-size: 1rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+      .price-card ul { list-style: none; margin: 1rem 0 1.5rem; display: grid; gap: 0.5rem; font-size: 0.92rem; color: var(--ink2); }
+      .price-card li::before { content: '—'; color: var(--accent); margin-right: 0.5rem; }
+      .seed { border: 1px solid var(--accent); border-radius: 7px; padding: 1.5rem; background: var(--accent-soft); }
+      .seed h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+      .seed p { color: var(--ink2); font-size: 0.95rem; }
+      .seed .btn { margin-top: 1rem; }
+      @media (max-width: 760px) { .price { grid-template-columns: 1fr; } }
 
       /* ── FOOTER ──────────────────────────────────────────── */
-      .cs-footer { border-top: 1px solid var(--border-1); padding: 2rem; background: #fff; }
-      .cs-footer-inner {
-        max-width: 1000px; margin: 0 auto;
-        display: flex; align-items: center; justify-content: space-between;
-        gap: 1rem; flex-wrap: wrap;
-      }
-      .cs-footer-logo {
-        display: inline-flex; align-items: center; gap: 8px;
-        font-weight: 800; font-size: 1rem; letter-spacing: -0.02em;
-        opacity: 0.85;
-      }
-      .cs-footer-logo img { width: 22px; height: 22px; }
-      .cs-footer-logo .court { color: var(--brand-navy); }
-      .cs-footer-logo .side  { color: var(--brand-green-400); }
-      .cs-footer p { font-size: 0.8rem; color: var(--fg-3); margin: 0; }
+      footer { border-top: 1px solid var(--hair); padding: 2rem 0; font-size: 0.85rem; color: var(--muted); }
+      .foot { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+      footer a { color: var(--ink2); text-decoration: none; }
+      footer a:hover { color: var(--ink); }
     </style>
   </head>
-  <body>
 
-    <!-- NAV -->
-    <nav class="cs-nav">
-      <a href="/" class="cs-logo">
-        <img src="/logo-courtside-mark.svg" alt="" />
-        <span><span class="court">COURT</span><span class="side">SIDE</span></span>
-      </a>
-      <a href={adminAppUrl} class="cs-nav-cta">Comenzar gratis →</a>
+  <body>
+    <nav class="nav">
+      <div class="wrap nav-inner">
+        <a href="/" class="logo">
+          <img src="/logo-courtside-mark.svg" alt="" width="26" height="26" />
+          <span>Court<span class="side">side</span></span>
+        </a>
+        <div class="nav-links">
+          <a href="#panel" class="hide-sm">El panel</a>
+          <a href="#operacion" class="hide-sm">Operación</a>
+          <a href="#precio" class="hide-sm">Precio</a>
+          <a href={adminAppUrl} class="hide-sm">Ingresar</a>
+          <a href={demoHref} class="btn btn-primary">Pedir una demo</a>
+        </div>
+      </div>
     </nav>
 
     <!-- HERO -->
-    <section class="cs-hero">
-      <div class="cs-hero-inner">
-        <span class="cs-hero-badge">Para clubes de tenis y pádel</span>
-        <h1 class="cs-hero-h1">Gestioná tu club<br /><span>sin complicaciones</span></h1>
-        <p class="cs-hero-p">
-          Reservas online, gestión de socios, academia, torneos y más.
-          Todo desde un panel web. Tus jugadores lo usan desde el celular.
+    <header class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Para clubes de tenis y pádel</p>
+        <h1>Sabé cómo va tu club <span>antes de que te lo cuenten.</span></h1>
+        <p class="lead">
+          Courtside es gestión y analítica para quien administra el club: reservas,
+          caja, socios, profesores, academia y torneos en un solo lugar. Y cada
+          mañana, una frase sobre cómo viene el mes y qué hay que resolver.
         </p>
-        <div class="cs-hero-actions">
-          <a href={adminAppUrl} class="cs-btn-primary">Probalo gratis</a>
-          <a href="#features" class="cs-btn-secondary">Ver funciones</a>
+        <div class="hero-actions">
+          <a href={demoHref} class="btn btn-primary btn-lg">Pedir una demo</a>
+          <a href="#panel" class="btn btn-lg">Ver qué muestra</a>
+        </div>
+        <p class="hero-note">Sin app para socios ni cambios en cómo reservan hoy: el mostrador carga, el panel responde.</p>
+
+        <!-- La pantalla real, en texto. -->
+        <div class="verdict" id="panel" aria-label="Ejemplo del panel">
+          <div class="verdict-bar">
+            <span><b>Panel</b> · Parque Tenis Club</span>
+            <span>Septiembre · actualizado 08:10</span>
+          </div>
+          <div class="verdict-body">
+            <p class="eyebrow">Cómo va el club</p>
+            <h3>Septiembre viene 6% abajo, con la ocupación de los martes a la noche en 40%.</h3>
+            <p>Hay $ 1.240.000 jugados y sin cobrar. La academia sostiene el mes.</p>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><div class="k">Ingresos</div><div class="v">$ 13,6 M</div><div class="d neg">−6% vs agosto</div></div>
+            <div class="kpi"><div class="k">Por cobrar</div><div class="v">$ 1,24 M</div><div class="d">reservas jugadas</div></div>
+            <div class="kpi"><div class="k">Ocupación</div><div class="v">36%</div><div class="d">sobre canchas activas</div></div>
+            <div class="kpi"><div class="k">Resultado</div><div class="v">$ 4,1 M</div><div class="d">margen 30%</div></div>
+          </div>
+          <div class="todo">
+            <div class="todo-row"><div>3 socios que dejaron de venir<small>Jugaban 2 veces por semana hasta julio.</small></div><span class="act">Ver quiénes →</span></div>
+            <div class="todo-row"><div>1 cierre de caja con diferencia<small>Faltante de $ 12.500 el 14/09.</small></div><span class="act">Ver cierre →</span></div>
+            <div class="todo-row"><div>2 profesores sin costo cargado<small>Sin eso, su rentabilidad es facturación bruta.</small></div><span class="act">Cargar costos →</span></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PREGUNTAS -->
+    <section>
+      <div class="wrap">
+        <p class="eyebrow">Lo que responde</p>
+        <h2>Las seis preguntas que hoy contestás a ojo.</h2>
+        <p class="lead">Todo sale de lo que el mostrador carga todos los días. No hay planilla aparte.</p>
+        <div class="questions">
+          <div class="q"><b>¿De dónde viene la plata?</b><span>Ingresos por fuente: alquiler, academia, buffet, torneos. Cuál crece y cuál se cae.</span></div>
+          <div class="q"><b>¿Cuándo tengo las canchas vacías?</b><span>Ocupación por día y hora. La franja muerta del martes, con nombre y apellido.</span></div>
+          <div class="q"><b>¿Gané o perdí este mes?</b><span>Ingresos contra egresos, con costos reales de profesores y buffet, no facturación bruta.</span></div>
+          <div class="q"><b>¿Quién dejó de venir?</b><span>Socios en riesgo antes de que se vayan del todo. Retención es plata.</span></div>
+          <div class="q"><b>¿Qué profesor factura y cuál sólo ocupa cancha?</b><span>Horas, alumnos e ingreso por profesor, contra lo que se le paga.</span></div>
+          <div class="q"><b>¿Quién me debe?</b><span>Cuenta corriente por familia, con tope de fiado y cobro desde la caja.</span></div>
         </div>
       </div>
     </section>
 
-    <!-- FEATURES -->
-    <section class="cs-features" id="features">
-      <div class="cs-features-inner">
-        <p class="cs-section-label">Funcionalidades</p>
-        <h2 class="cs-section-title">Todo lo que tu club necesita</h2>
-        <div class="cs-features-grid">
-
-          <div class="cs-feature-card">
-            <div class="cs-feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="18" height="18" x="3" y="4" rx="2"/>
-                <line x1="16" x2="16" y1="2" y2="6"/>
-                <line x1="8" x2="8" y1="2" y2="6"/>
-                <line x1="3" x2="21" y1="10" y2="10"/>
-                <circle cx="8" cy="14" r="1" fill="currentColor"/>
-                <circle cx="12" cy="14" r="1" fill="currentColor"/>
-                <circle cx="16" cy="14" r="1" fill="currentColor"/>
-                <circle cx="8" cy="18" r="1" fill="currentColor"/>
-                <circle cx="12" cy="18" r="1" fill="currentColor"/>
-              </svg>
-            </div>
-            <h3>Reservas de canchas</h3>
-            <p>Tus jugadores reservan desde el celular en segundos. Sin llamados, sin WhatsApps.</p>
-          </div>
-
-          <div class="cs-feature-card">
-            <div class="cs-feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            </div>
-            <h3>Gestión de socios</h3>
-            <p>Alta de jugadores por invitación, roles diferenciados, historial de pagos.</p>
-          </div>
-
-          <div class="cs-feature-card">
-            <div class="cs-feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-              </svg>
-            </div>
-            <h3>Academia</h3>
-            <p>Grupos de entrenamiento, asistencia, clases privadas con tus profesores.</p>
-          </div>
-
-          <div class="cs-feature-card">
-            <div class="cs-feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-                <path d="M4 22h16"/>
-                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
-              </svg>
-            </div>
-            <h3>Torneos</h3>
-            <p>Organización de torneos con brackets automáticos, resultados y seguimiento.</p>
-          </div>
-
-          <div class="cs-feature-card">
-            <div class="cs-feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 3v18h18"/>
-                <path d="M18 17V9"/>
-                <path d="M13 17V5"/>
-                <path d="M8 17v-3"/>
-              </svg>
-            </div>
-            <h3>Dashboard</h3>
-            <p>Visión en tiempo real de ocupación de canchas, ingresos y actividad del club.</p>
-          </div>
-
-          <div class="cs-feature-card">
-            <div class="cs-feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="14" height="20" x="5" y="2" rx="2"/>
-                <path d="M12 18h.01"/>
-              </svg>
-            </div>
-            <h3>App PWA para jugadores</h3>
-            <p>Se instala en el celular sin pasar por el App Store. Lista en segundos.</p>
-          </div>
-
+    <!-- OPERACIÓN -->
+    <section id="operacion">
+      <div class="wrap">
+        <p class="eyebrow">Operación</p>
+        <h2>La captura del dato, sin cambiar cómo trabaja tu gente.</h2>
+        <p class="lead">El socio sigue reservando por WhatsApp o en el mostrador. El staff lo carga en segundos, y de ahí sale todo lo demás.</p>
+        <div class="grid-3">
+          <div class="cell"><span class="tag">Reservas</span><h3>Grilla por cancha y hora</h3><p>Eventuales, fijos semanales, clases y academia en la misma grilla. Sin doble reserva: lo garantiza la base, no la memoria del mostrador.</p></div>
+          <div class="cell"><span class="tag">Caja</span><h3>Apertura, cobros, arqueo y cierre Z</h3><p>Efectivo, transferencia, tarjeta o cuenta corriente. Cada peso queda en un libro que no se edita: se revierte.</p></div>
+          <div class="cell"><span class="tag">Socios</span><h3>Padrón, categorías y precios diferenciales</h3><p>Socio, abonado, cliente. Responsable de pago por familia, carnet al día, cuenta corriente.</p></div>
+          <div class="cell"><span class="tag">Canchas</span><h3>Tarifas por franja y mantenimiento</h3><p>Precio por categoría y horario. Tareas de mantenimiento con costo, que entran al resultado del club.</p></div>
+          <div class="cell"><span class="tag">Profesores y academia</span><h3>Clases, grupos y cuotas</h3><p>Disponibilidad, clases particulares, grupos por edad y nivel con cuota mensual. Lo que cobra el club y lo que le paga al profe.</p></div>
+          <div class="cell"><span class="tag">Torneos</span><h3>Inscripción, cuadro y programación</h3><p>Eliminación o round robin. Cada partido programado ocupa la cancha de verdad, y la inscripción se cobra en caja.</p></div>
         </div>
       </div>
     </section>
 
-    <!-- TWO APPS -->
-    <section class="cs-apps-section">
-      <div class="cs-apps-head">
-        <p class="cs-section-label">Dos aplicaciones</p>
-        <h2 class="cs-section-title">Una para vos, una para tus jugadores</h2>
-      </div>
-      <div class="cs-apps-inner">
-
-        <div class="cs-app-card cs-app-navy">
-          <h3>Panel de administrador</h3>
-          <p>Para el dueño y staff del club. Accedé desde cualquier computadora.</p>
-          <ul>
-            <li>Gestión completa de canchas</li>
-            <li>Alta de socios e invitaciones</li>
-            <li>Control de academia y torneos</li>
-            <li>Dashboard de ingresos</li>
-            <li>Configuración del club</li>
-          </ul>
-        </div>
-
-        <div class="cs-app-card">
-          <h3>App para jugadores</h3>
-          <p>Se descarga desde la invitación del club. Funciona offline.</p>
-          <ul>
-            <li>Reservar canchas al instante</li>
-            <li>Ver sus turnos y pagos</li>
-            <li>Inscribirse en torneos</li>
-            <li>Seguir la academia</li>
-            <li>Perfil personal</li>
-          </ul>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- PRICING -->
-    <section class="cs-pricing" id="pricing">
-      <div class="cs-pricing-inner">
-        <p class="cs-section-label">Precio</p>
-        <h2 class="cs-section-title">Simple y predecible</h2>
-        <div class="cs-price-card">
-          <div class="cs-price-tag">USD 50<span>/mes</span></div>
-          <p class="cs-price-desc">Por club. Sin límite de usuarios ni canchas.</p>
-          <ul class="cs-price-features">
-            <li>Reservas ilimitadas</li>
-            <li>Socios ilimitados</li>
-            <li>Academia y torneos incluidos</li>
-            <li>App PWA para jugadores</li>
-            <li>Soporte por WhatsApp</li>
-          </ul>
-          <a href={adminAppUrl} class="cs-btn-full">Empezar ahora →</a>
+    <!-- CÓMO EMPEZAR -->
+    <section>
+      <div class="wrap">
+        <p class="eyebrow">Cómo empezar</p>
+        <h2>Onboarding asistido. Nadie arranca solo.</h2>
+        <p class="lead">Lo hacemos con vos, en el club, con tus canchas y tus precios cargados el primer día.</p>
+        <div class="steps">
+          <div class="step"><h3>Una charla de 30 minutos</h3><p>Vemos cómo trabaja hoy el club: horarios, categorías, cómo cobran, qué duele.</p></div>
+          <div class="step"><h3>Configuración inicial con vos</h3><p>Canchas, tarifas, profesores y padrón cargados. El staff sale operando ese mismo día.</p></div>
+          <div class="step"><h3>El panel empieza a hablar</h3><p>A las dos semanas ya hay dato suficiente para la primera lectura del mes. Ahí ajustamos lo que haga falta.</p></div>
         </div>
       </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="cs-footer">
-      <div class="cs-footer-inner">
-        <div class="cs-footer-logo">
-          <img src="/logo-courtside-mark.svg" alt="" />
-          <span><span class="court">COURT</span><span class="side">SIDE</span></span>
+    <!-- PRECIO -->
+    <section id="precio">
+      <div class="wrap">
+        <p class="eyebrow">Precio</p>
+        <h2>Simple y predecible.</h2>
+        <div class="price">
+          <div class="price-card">
+            <div class="amount">USD 50 <small>/ mes por club</small></div>
+            <ul>
+              <li>Canchas, socios y usuarios sin límite</li>
+              <li>Panel completo con las seis respuestas</li>
+              <li>Reservas, caja, socios, profesores, academia y torneos</li>
+              <li>Exportación para el contador</li>
+              <li>Soporte directo por WhatsApp</li>
+            </ul>
+            <a href={demoHref} class="btn btn-primary">Pedir una demo</a>
+          </div>
+          <div class="seed" id="contacto">
+            <h3>Clubes semilla</h3>
+            <p>
+              Estamos incorporando un grupo reducido de clubes con condiciones especiales a cambio de
+              feedback real: usan la plataforma en su operación diaria y nos dicen qué falta. Si tu club
+              tiene entre 3 y 20 canchas y ganas de ordenarse, hablemos.
+            </p>
+            <a href={demoHref} class="btn">Quiero ser club semilla</a>
+          </div>
         </div>
-        <p>© {new Date().getFullYear()} Courtside. Hecho para clubes de raqueta.</p>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap foot">
+        <span>© {year} Courtside</span>
+        <span><a href={adminAppUrl}>Ingresar al panel</a></span>
       </div>
     </footer>
-
   </body>
 </html>
