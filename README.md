@@ -33,4 +33,4 @@ Antes de publicar, completar `contactWhatsApp`, `contactEmail` y `adminAppUrl` a
 
 ## Deploy
 
-Vercel (framework Astro, sin variables de entorno). Dominio propio desde el panel de Vercel.
+Azure Static Web Apps, tier Free, recurso `swa-courtside-landing` en `rg-courtside-prod` (mismo grupo que la API). El Action `.github/workflows/azure-static-web-apps.yml` publica en cada push a `master`; necesita el secret `AZURE_STATIC_WEB_APPS_API_TOKEN`. Dominio propio: pendiente, se agrega desde el recurso en Azure y después se ajusta `adminAppUrl`.
