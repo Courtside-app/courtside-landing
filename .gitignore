@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Claude Code / local design references
+.claude/
+Mejora de diseño de aplicación - landing/

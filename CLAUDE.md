@@ -18,7 +18,7 @@ This is one of 3 repos:
 
 - **Framework:** Astro (SSG — zero JS by default, SEO optimized)
 - **Styling:** Vanilla CSS in a `<style>` block (no Tailwind). Same visual system as the admin redesign (Sep 2026): near-black ink, **one** orange accent `#e2683a`, 1px hairlines, 5–7px radii, tabular numbers, light + dark via `prefers-color-scheme`.
-- **Deploy:** Vercel (`vercel.json` with `"framework": "astro"`)
+- **Deploy:** Azure Static Web Apps (Free) via `.github/workflows/azure-static-web-apps.yml`
 
 ## Project Structure
 
@@ -60,4 +60,4 @@ With both contact fields empty the CTAs point to `#contacto` (the clubes-semilla
 
 ## Deploy
 
-Vercel detects Astro automatically. No env vars. Custom domain: add it in Vercel and update `adminAppUrl`.
+Azure Static Web Apps (`swa-courtside-landing`, rg-courtside-prod). The workflow builds with `npm run build` and uploads `dist/`. No env vars. Custom domain: add it on the Azure resource, then update `adminAppUrl` in `src/pages/index.astro`.
