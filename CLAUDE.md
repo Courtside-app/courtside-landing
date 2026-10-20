@@ -1,8 +1,8 @@
-# Courtside — Landing Page (courtside-landing)
+# RaketSense — Landing Page (courtside-landing)
 
 ## Product Overview
 
-**Courtside** is a **management + analytics platform for racquet clubs** (tennis/padel), USD 50/month per club. The buyer and only user is **whoever administers the club** (owner, manager, front desk) — not the player. Operational features (bookings, cash, members, coaches, academy, tournaments) capture the data that feeds the Panel, which is the actual differentiator.
+**RaketSense** (formerly Courtside, renamed Oct 2026 — the repos keep the old name for now) is the **intelligence platform for racquet clubs** (tennis/padel): integral management + analytics, positioned on AI, USD 50/month per club. The buyer and only user is **whoever administers the club** (owner, manager, front desk) — not the player. Operational features (bookings, cash, members, coaches, academy, tournaments) capture the data that feeds the Panel, which is the actual differentiator.
 
 This repo is the **marketing landing page**: a static Astro site that presents the product and drives visitors to **ask for a demo** (onboarding is assisted, one club at a time — there is no public signup).
 
@@ -24,8 +24,8 @@ This is one of 3 repos:
 
 ```
 courtside-landing/
-├── src/pages/index.astro   # Single page: nav, hero + Panel mock, 6 questions, operación, cómo empezar, precio + clubes semilla, footer
-├── public/                 # favicon, logo-courtside-mark.svg (recolored to the accent)
+├── src/pages/index.astro   # Single page: nav, hero + Panel mock, 6 questions, inteligencia, gestión integral, cómo empezar, precio + programa Clubes Semilla, footer
+├── public/                 # favicon.svg = logo-mark.svg (tennis racket + padel paddle, accent)
 ├── astro.config.mjs
 └── vercel.json
 ```
@@ -48,10 +48,12 @@ Three constants at the top of `src/pages/index.astro`:
 | `contactEmail`    | Fallback `mailto:` when there is no WhatsApp                  |
 | `adminAppUrl`     | Login URL of the admin app once deployed                      |
 
-With both contact fields empty the CTAs point to `#contacto` (the clubes-semilla box), so the page never links to nothing — but fill them in before going live.
+Each CTA has its own WhatsApp message (`demoHref`, `seedHref`). With both contact fields empty the CTAs point to `#semilla` (the clubes-semilla box), so the page never links to nothing — but fill them in before going live.
 
 ## Content rules
 
+- Slogan: **«Inteligencia para clubes de tenis y pádel»**. Contrast with the competition (booking apps): «Las apps de reservas te dicen quién jugó. RaketSense te dice cómo va el club.»
+- **AI is positioning, not a feature list.** Say the platform is built on the club's real data and designed to work with AI; do not promise specific AI features until they ship.
 - Spanish (rioplatense: "vos", "mostrador", "socio"). Target: clubs in Argentina, 3–20 courts.
 - Lead with the answer, then the data — same as the Panel. The hero mock ("Cómo va el club") is text, not a screenshot, so it stays legible on mobile and in dark mode.
 - The **six questions** section mirrors `docs/strategy/README.md §7` in `courtside-admin`. If the Panel changes, change both.

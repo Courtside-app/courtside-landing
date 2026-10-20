@@ -1,14 +1,14 @@
-# Courtside — Landing
+# RaketSense — Landing
 
-Sitio estático de marketing para **Courtside**: gestión y analítica para clubes de tenis y pádel. Presenta el producto y lleva al visitante a **pedir una demo** (el onboarding es asistido; no hay registro público).
+Sitio estático de marketing para **RaketSense** (antes Courtside): inteligencia para clubes de tenis y pádel. Presenta el producto y lleva al visitante a **pedir una demo** (el onboarding es asistido; no hay registro público).
 
-## Qué es Courtside
+## Qué es RaketSense
 
 Una plataforma para **quien administra el club**: reservas, caja, socios, canchas, profesores, academia y torneos en un solo lugar, y un Panel que cada mañana dice cómo viene el mes y qué hay que resolver. El socio no es usuario: sigue reservando por WhatsApp o en el mostrador; el staff carga, el Panel responde.
 
 - **Target:** clubes de tenis y pádel de Argentina, 3 a 20 canchas.
 - **Modelo:** SaaS multi-tenant (un backend + una base, aislado por `club_id`). USD 50/mes por club, sin límite de canchas ni socios.
-- **Etapa (sep 2026):** clubes semilla con condiciones especiales a cambio de feedback real.
+- **Etapa (oct 2026):** pre-lanzamiento, programa Clubes Semilla con condiciones especiales a cambio de feedback real.
 
 ## Las seis respuestas del Panel
 
