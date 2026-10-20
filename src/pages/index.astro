@@ -9,14 +9,22 @@ const contactWhatsApp = '5491165916614';
 const contactEmail = 'contacto@jpalegre.com';
 const adminAppUrl = 'https://ca-courtside.icyocean-a8a8efe1.eastus2.azurecontainerapps.io/login';
 
-const demoMessage = encodeURIComponent(
-  'Hola, administro un club de tenis/pádel y quiero ver Courtside funcionando.',
+// Cada CTA abre WhatsApp con su propio mensaje; sin WhatsApp, mail; sin nada,
+// el recuadro de clubes semilla.
+const contactHref = (message: string, subject: string) =>
+  contactWhatsApp
+    ? `https://wa.me/${contactWhatsApp}?text=${encodeURIComponent(message)}`
+    : contactEmail
+      ? `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}`
+      : '#semilla';
+const demoHref = contactHref(
+  'Hola, administro un club de tenis/pádel y quiero conocer RaketSense.',
+  'Quiero conocer RaketSense',
 );
-const demoHref = contactWhatsApp
-  ? `https://wa.me/${contactWhatsApp}?text=${demoMessage}`
-  : contactEmail
-    ? `mailto:${contactEmail}?subject=${encodeURIComponent('Quiero ver Courtside')}`
-    : '#contacto';
+const seedHref = contactHref(
+  'Hola, quiero que mi club sea parte del programa Clubes Semilla de RaketSense.',
+  'Programa Clubes Semilla',
+);
 
 const year = new Date().getFullYear();
 ---
@@ -24,21 +32,20 @@ const year = new Date().getFullYear();
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta
       name="description"
-      content="Courtside: gestión y analítica para clubes de tenis y pádel. Reservas, caja, socios, profesores, academia y torneos en un solo lugar, y un panel que te dice cómo va el club."
+      content="RaketSense: inteligencia para clubes de tenis y pádel. Toda la gestión del club en un solo lugar —reservas, caja, socios, profesores, academia y torneos— y un panel que te dice cómo va el club."
     />
-    <meta property="og:title" content="Courtside — Sabé cómo va tu club" />
+    <meta property="og:title" content="RaketSense — Inteligencia para clubes de tenis y pádel" />
     <meta
       property="og:description"
-      content="Gestión y analítica para clubes de tenis y pádel. Cada mañana, una frase sobre cómo viene el mes y qué hay que resolver."
+      content="Gestión integral y analítica para quien administra el club. Cada mañana, una lectura de cómo viene el mes y qué hay que resolver."
     />
     <meta property="og:type" content="website" />
-    <title>Courtside — Gestión y analítica para clubes de tenis y pádel</title>
+    <title>RaketSense — Inteligencia para clubes de tenis y pádel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -130,6 +137,13 @@ const year = new Date().getFullYear();
 
       /* ── HERO ────────────────────────────────────────────── */
       .hero { padding: 5rem 0 3.5rem; }
+      .pill {
+        display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem;
+        padding: 0.3rem 0.75rem; border: 1px solid var(--border); border-radius: 999px;
+        font-size: 0.8rem; color: var(--ink2); text-decoration: none; background: var(--surface);
+      }
+      .pill:hover { border-color: var(--accent); }
+      .pill b { color: var(--accent-ink); font-weight: 600; }
       .hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; max-width: 18ch; }
       .hero h1 span { color: var(--accent); }
       .hero .lead { margin: 1.25rem 0 2rem; font-size: 1.15rem; }
@@ -203,12 +217,18 @@ const year = new Date().getFullYear();
       .price-card { border: 1px solid var(--border); border-radius: 7px; background: var(--surface); padding: 1.5rem; }
       .price-card .amount { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em; }
       .price-card .amount small { font-size: 1rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+      .price-note { margin-top: 0.4rem; font-size: 0.92rem; color: var(--ink2); }
       .price-card ul { list-style: none; margin: 1rem 0 1.5rem; display: grid; gap: 0.5rem; font-size: 0.92rem; color: var(--ink2); }
       .price-card li::before { content: '—'; color: var(--accent); margin-right: 0.5rem; }
       .seed { border: 1px solid var(--accent); border-radius: 7px; padding: 1.5rem; background: var(--accent-soft); }
       .seed h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
       .seed p { color: var(--ink2); font-size: 0.95rem; }
+      .seed ul { list-style: none; margin: 0.9rem 0 0.75rem; display: grid; gap: 0.4rem; font-size: 0.92rem; color: var(--ink2); }
+      .seed li::before { content: '—'; color: var(--accent); margin-right: 0.5rem; }
+      .seed .fine { font-size: 0.85rem; color: var(--muted); }
       .seed .btn { margin-top: 1rem; }
+
+      .vision { margin-top: 1.5rem; font-size: 0.95rem; color: var(--muted); max-width: 60ch; }
       @media (max-width: 760px) { .price { grid-template-columns: 1fr; } }
 
       /* ── FOOTER ──────────────────────────────────────────── */
@@ -223,13 +243,14 @@ const year = new Date().getFullYear();
     <nav class="nav">
       <div class="wrap nav-inner">
         <a href="/" class="logo">
-          <img src="/logo-courtside-mark.svg" alt="" width="26" height="26" />
-          <span>Court<span class="side">side</span></span>
+          <img src="/logo-mark.svg" alt="" width="26" height="26" />
+          <span>Raket<span class="side">Sense</span></span>
         </a>
         <div class="nav-links">
           <a href="#panel" class="hide-sm">El panel</a>
-          <a href="#operacion" class="hide-sm">Operación</a>
-          <a href="#precio" class="hide-sm">Precio</a>
+          <a href="#inteligencia" class="hide-sm">Inteligencia</a>
+          <a href="#gestion" class="hide-sm">Gestión</a>
+          <a href="#semilla" class="hide-sm">Clubes semilla</a>
           <a href={adminAppUrl} class="hide-sm">Ingresar</a>
           <a href={demoHref} class="btn btn-primary">Pedir una demo</a>
         </div>
@@ -239,18 +260,19 @@ const year = new Date().getFullYear();
     <!-- HERO -->
     <header class="hero">
       <div class="wrap">
-        <p class="eyebrow">Para clubes de tenis y pádel</p>
-        <h1>Sabé cómo va tu club <span>antes de que te lo cuenten.</span></h1>
+        <a href="#semilla" class="pill"><b>Próximo lanzamiento</b> Programa Clubes Semilla abierto →</a>
+        <p class="eyebrow">Inteligencia para clubes de tenis y pádel</p>
+        <h1>Conocé cómo va tu club <span>antes de que te lo cuenten.</span></h1>
         <p class="lead">
-          Courtside es gestión y analítica para quien administra el club: reservas,
-          caja, socios, profesores, academia y torneos en un solo lugar. Y cada
-          mañana, una frase sobre cómo viene el mes y qué hay que resolver.
+          RaketSense reúne toda la gestión del club —reservas, caja, socios,
+          profesores, academia y torneos— y la convierte en inteligencia: cada
+          mañana, una lectura clara de cómo viene el mes y qué hay que resolver.
         </p>
         <div class="hero-actions">
           <a href={demoHref} class="btn btn-primary btn-lg">Pedir una demo</a>
           <a href="#panel" class="btn btn-lg">Ver qué muestra</a>
         </div>
-        <p class="hero-note">Sin app para socios ni cambios en cómo reservan hoy: el mostrador carga, el panel responde.</p>
+        <p class="hero-note">Se adapta a cómo trabaja hoy tu club: el mostrador carga, el panel responde.</p>
 
         <!-- La pantalla real, en texto. -->
         <div class="verdict" id="panel" aria-label="Ejemplo del panel">
@@ -272,7 +294,7 @@ const year = new Date().getFullYear();
           <div class="todo">
             <div class="todo-row"><div>3 socios que dejaron de venir<small>Jugaban 2 veces por semana hasta julio.</small></div><span class="act">Ver quiénes →</span></div>
             <div class="todo-row"><div>1 cierre de caja con diferencia<small>Faltante de $ 12.500 el 14/09.</small></div><span class="act">Ver cierre →</span></div>
-            <div class="todo-row"><div>2 profesores sin costo cargado<small>Sin eso, su rentabilidad es facturación bruta.</small></div><span class="act">Cargar costos →</span></div>
+            <div class="todo-row"><div>2 grupos de academia con lugar<small>Sub-14 martes y jueves: quedan 4 cupos.</small></div><span class="act">Ver grupos →</span></div>
           </div>
         </div>
       </div>
@@ -289,16 +311,35 @@ const year = new Date().getFullYear();
           <div class="q"><b>¿Cuándo tengo las canchas vacías?</b><span>Ocupación por día y hora. La franja muerta del martes, con nombre y apellido.</span></div>
           <div class="q"><b>¿Gané o perdí este mes?</b><span>Ingresos contra egresos, con costos reales de profesores y buffet, no facturación bruta.</span></div>
           <div class="q"><b>¿Quién dejó de venir?</b><span>Socios en riesgo antes de que se vayan del todo. Retención es plata.</span></div>
-          <div class="q"><b>¿Qué profesor factura y cuál sólo ocupa cancha?</b><span>Horas, alumnos e ingreso por profesor, contra lo que se le paga.</span></div>
-          <div class="q"><b>¿Quién me debe?</b><span>Cuenta corriente por familia, con tope de fiado y cobro desde la caja.</span></div>
+          <div class="q"><b>¿Cómo crece la academia?</b><span>Alumnos, clases y grupos por profesor, mes a mes. Datos para que cada profe llene su agenda y la academia crezca.</span></div>
+          <div class="q"><b>¿Cómo vienen los cobros?</b><span>Cuenta corriente por familia, saldos claros y cobro directo desde la caja.</span></div>
         </div>
       </div>
     </section>
 
-    <!-- OPERACIÓN -->
-    <section id="operacion">
+    <!-- INTELIGENCIA: posicionamiento, no promesas de features. -->
+    <section id="inteligencia">
       <div class="wrap">
-        <p class="eyebrow">Operación</p>
+        <p class="eyebrow">Inteligencia</p>
+        <h2>Las apps de reservas te dicen quién jugó. RaketSense te dice cómo va el club.</h2>
+        <p class="lead">
+          Nacimos en la era de la inteligencia artificial y la usamos donde suma: sobre los datos
+          reales de tu club, no sobre suposiciones. Por eso primero ordenamos la operación, y
+          sobre esa base trabaja la inteligencia.
+        </p>
+        <div class="grid-3">
+          <div class="cell"><span class="tag">Datos</span><h3>Todo el club en un solo lugar</h3><p>Cada reserva, cobro, clase y socio queda registrado una sola vez. Es la base de todo lo demás.</p></div>
+          <div class="cell"><span class="tag">Lectura</span><h3>Respuestas, no planillas</h3><p>El panel cruza ocupación, ingresos, costos y asistencia, y te dice en una frase qué está pasando y qué atender.</p></div>
+          <div class="cell"><span class="tag">IA</span><h3>Inteligencia artificial sobre tus datos</h3><p>Pensada desde el primer día para trabajar con IA. Cuanta más historia tiene tu club, más profundas son las respuestas.</p></div>
+        </div>
+        <p class="vision">Hoy, tenis y pádel. Nuestra meta: ser la referencia tecnológica de los clubes de raqueta.</p>
+      </div>
+    </section>
+
+    <!-- GESTIÓN INTEGRAL -->
+    <section id="gestion">
+      <div class="wrap">
+        <p class="eyebrow">Gestión integral</p>
         <h2>La captura del dato, sin cambiar cómo trabaja tu gente.</h2>
         <p class="lead">El socio sigue reservando por WhatsApp o en el mostrador. El staff lo carga en segundos, y de ahí sale todo lo demás.</p>
         <div class="grid-3">
@@ -333,7 +374,8 @@ const year = new Date().getFullYear();
         <h2>Simple y predecible.</h2>
         <div class="price">
           <div class="price-card">
-            <div class="amount">USD 50 <small>/ mes por club</small></div>
+            <div class="amount">2 alquileres <small>de cancha por mes</small></div>
+            <p class="price-note">Un abono mensual en pesos, por club, que vale lo mismo que dos alquileres de cancha.</p>
             <ul>
               <li>Canchas, socios y usuarios sin límite</li>
               <li>Panel completo con las seis respuestas</li>
@@ -343,14 +385,20 @@ const year = new Date().getFullYear();
             </ul>
             <a href={demoHref} class="btn btn-primary">Pedir una demo</a>
           </div>
-          <div class="seed" id="contacto">
-            <h3>Clubes semilla</h3>
+          <div class="seed" id="semilla">
+            <h3>Programa Clubes Semilla</h3>
             <p>
-              Estamos incorporando un grupo reducido de clubes con condiciones especiales a cambio de
-              feedback real: usan la plataforma en su operación diaria y nos dicen qué falta. Si tu club
-              tiene entre 3 y 20 canchas y ganas de ordenarse, hablemos.
+              Estamos por salir y sumamos un grupo reducido de clubes que nos acompañen desde el
+              principio: usan RaketSense en su operación diaria y nos dicen qué falta.
             </p>
-            <a href={demoHref} class="btn">Quiero ser club semilla</a>
+            <ul>
+              <li>Condiciones especiales mientras dure el programa</li>
+              <li>Puesta en marcha en tu club, con nosotros al lado</li>
+              <li>Línea directa con el equipo que lo construye</li>
+              <li>Tu feedback define lo que se desarrolla después</li>
+            </ul>
+            <p class="fine">Cupos limitados. Clubes de 3 a 20 canchas.</p>
+            <a href={seedHref} class="btn btn-primary">Quiero ser club semilla</a>
           </div>
         </div>
       </div>
@@ -358,7 +406,7 @@ const year = new Date().getFullYear();
 
     <footer>
       <div class="wrap foot">
-        <span>© {year} Courtside</span>
+        <span>© {year} RaketSense · Inteligencia para clubes de tenis y pádel</span>
         <span><a href={adminAppUrl}>Ingresar al panel</a></span>
       </div>
     </footer>
