@@ -7,7 +7,7 @@ Sitio estático de marketing para **RaketSense** (antes Courtside): inteligencia
 Una plataforma para **quien administra el club**: reservas, caja, socios, canchas, profesores, academia y torneos en un solo lugar, y un Panel que cada mañana dice cómo viene el mes y qué hay que resolver. El socio no es usuario: sigue reservando por WhatsApp o en el mostrador; el staff carga, el Panel responde.
 
 - **Target:** clubes de tenis y pádel de Argentina, 3 a 20 canchas.
-- **Modelo:** SaaS multi-tenant (un backend + una base, aislado por `club_id`). USD 50/mes por club, sin límite de canchas ni socios.
+- **Modelo:** SaaS multi-tenant (un backend + una base, aislado por `club_id`). Abono mensual en pesos por club, equivalente a dos alquileres de cancha; sin límite de canchas ni socios.
 - **Etapa (oct 2026):** pre-lanzamiento, programa Clubes Semilla con condiciones especiales a cambio de feedback real.
 
 ## Las seis respuestas del Panel
@@ -18,8 +18,8 @@ Una plataforma para **quien administra el club**: reservas, caja, socios, cancha
 | ¿Cuándo tengo las canchas vacías? | Ocupación por día y hora |
 | ¿Gané o perdí este mes? | Ingresos vs egresos con costos reales |
 | ¿Quién dejó de venir? | Socios en riesgo |
-| ¿Qué profesor factura? | Horas, alumnos e ingreso por profesor vs lo que se le paga |
-| ¿Quién me debe? | Cuenta corriente por familia, tope de fiado |
+| ¿Cómo crece la academia? | Alumnos, clases y grupos por profesor, mes a mes |
+| ¿Cómo vienen los cobros? | Cuenta corriente por familia, saldos y cobro desde la caja |
 
 ## Desarrollo
 

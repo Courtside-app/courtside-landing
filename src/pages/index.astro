@@ -217,6 +217,7 @@ const year = new Date().getFullYear();
       .price-card { border: 1px solid var(--border); border-radius: 7px; background: var(--surface); padding: 1.5rem; }
       .price-card .amount { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em; }
       .price-card .amount small { font-size: 1rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+      .price-note { margin-top: 0.4rem; font-size: 0.92rem; color: var(--ink2); }
       .price-card ul { list-style: none; margin: 1rem 0 1.5rem; display: grid; gap: 0.5rem; font-size: 0.92rem; color: var(--ink2); }
       .price-card li::before { content: '—'; color: var(--accent); margin-right: 0.5rem; }
       .seed { border: 1px solid var(--accent); border-radius: 7px; padding: 1.5rem; background: var(--accent-soft); }
@@ -261,7 +262,7 @@ const year = new Date().getFullYear();
       <div class="wrap">
         <a href="#semilla" class="pill"><b>Próximo lanzamiento</b> Programa Clubes Semilla abierto →</a>
         <p class="eyebrow">Inteligencia para clubes de tenis y pádel</p>
-        <h1>Sabé cómo va tu club <span>antes de que te lo cuenten.</span></h1>
+        <h1>Conocé cómo va tu club <span>antes de que te lo cuenten.</span></h1>
         <p class="lead">
           RaketSense reúne toda la gestión del club —reservas, caja, socios,
           profesores, academia y torneos— y la convierte en inteligencia: cada
@@ -271,7 +272,7 @@ const year = new Date().getFullYear();
           <a href={demoHref} class="btn btn-primary btn-lg">Pedir una demo</a>
           <a href="#panel" class="btn btn-lg">Ver qué muestra</a>
         </div>
-        <p class="hero-note">Sin app para socios ni cambios en cómo reservan hoy: el mostrador carga, el panel responde.</p>
+        <p class="hero-note">Se adapta a cómo trabaja hoy tu club: el mostrador carga, el panel responde.</p>
 
         <!-- La pantalla real, en texto. -->
         <div class="verdict" id="panel" aria-label="Ejemplo del panel">
@@ -293,7 +294,7 @@ const year = new Date().getFullYear();
           <div class="todo">
             <div class="todo-row"><div>3 socios que dejaron de venir<small>Jugaban 2 veces por semana hasta julio.</small></div><span class="act">Ver quiénes →</span></div>
             <div class="todo-row"><div>1 cierre de caja con diferencia<small>Faltante de $ 12.500 el 14/09.</small></div><span class="act">Ver cierre →</span></div>
-            <div class="todo-row"><div>2 profesores sin costo cargado<small>Sin eso, su rentabilidad es facturación bruta.</small></div><span class="act">Cargar costos →</span></div>
+            <div class="todo-row"><div>2 grupos de academia con lugar<small>Sub-14 martes y jueves: quedan 4 cupos.</small></div><span class="act">Ver grupos →</span></div>
           </div>
         </div>
       </div>
@@ -310,8 +311,8 @@ const year = new Date().getFullYear();
           <div class="q"><b>¿Cuándo tengo las canchas vacías?</b><span>Ocupación por día y hora. La franja muerta del martes, con nombre y apellido.</span></div>
           <div class="q"><b>¿Gané o perdí este mes?</b><span>Ingresos contra egresos, con costos reales de profesores y buffet, no facturación bruta.</span></div>
           <div class="q"><b>¿Quién dejó de venir?</b><span>Socios en riesgo antes de que se vayan del todo. Retención es plata.</span></div>
-          <div class="q"><b>¿Qué profesor factura y cuál sólo ocupa cancha?</b><span>Horas, alumnos e ingreso por profesor, contra lo que se le paga.</span></div>
-          <div class="q"><b>¿Quién me debe?</b><span>Cuenta corriente por familia, con tope de fiado y cobro desde la caja.</span></div>
+          <div class="q"><b>¿Cómo crece la academia?</b><span>Alumnos, clases y grupos por profesor, mes a mes. Datos para que cada profe llene su agenda y la academia crezca.</span></div>
+          <div class="q"><b>¿Cómo vienen los cobros?</b><span>Cuenta corriente por familia, saldos claros y cobro directo desde la caja.</span></div>
         </div>
       </div>
     </section>
@@ -373,7 +374,8 @@ const year = new Date().getFullYear();
         <h2>Simple y predecible.</h2>
         <div class="price">
           <div class="price-card">
-            <div class="amount">USD 50 <small>/ mes por club</small></div>
+            <div class="amount">2 alquileres <small>de cancha por mes</small></div>
+            <p class="price-note">Un abono mensual en pesos, por club, que vale lo mismo que dos alquileres de cancha.</p>
             <ul>
               <li>Canchas, socios y usuarios sin límite</li>
               <li>Panel completo con las seis respuestas</li>
