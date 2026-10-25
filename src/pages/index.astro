@@ -17,9 +17,10 @@ const contactHref = (message: string, subject: string) =>
     : contactEmail
       ? `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}`
       : '#semilla';
-const demoHref = contactHref(
-  'Hola, administro un club de tenis/pádel y quiero conocer RaketSense.',
-  'Quiero conocer RaketSense',
+// Dos puertas de entrada: lista de espera (cualquier club) y Clubes Semilla.
+const waitlistHref = contactHref(
+  'Hola, administro un club de tenis/pádel y quiero sumarme a la lista de espera de RaketSense.',
+  'Lista de espera de RaketSense',
 );
 const seedHref = contactHref(
   'Hola, quiero que mi club sea parte del programa Clubes Semilla de RaketSense.',
@@ -138,9 +139,9 @@ const year = new Date().getFullYear();
       /* ── HERO ────────────────────────────────────────────── */
       .hero { padding: 5rem 0 3.5rem; }
       .pill {
-        display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem;
-        padding: 0.3rem 0.75rem; border: 1px solid var(--border); border-radius: 999px;
-        font-size: 0.8rem; color: var(--ink2); text-decoration: none; background: var(--surface);
+        display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.25rem 0.6rem; margin-bottom: 1.5rem;
+        padding: 0.6rem 1.1rem; border: 1px solid var(--accent); border-radius: 999px;
+        font-size: 1rem; color: var(--ink); text-decoration: none; background: var(--accent-soft);
       }
       .pill:hover { border-color: var(--accent); }
       .pill b { color: var(--accent-ink); font-weight: 600; }
@@ -252,7 +253,7 @@ const year = new Date().getFullYear();
           <a href="#gestion" class="hide-sm">Gestión</a>
           <a href="#semilla" class="hide-sm">Clubes semilla</a>
           <a href={adminAppUrl} class="hide-sm">Ingresar</a>
-          <a href={demoHref} class="btn btn-primary">Pedir una demo</a>
+          <a href={waitlistHref} class="btn btn-primary">Lista de espera</a>
         </div>
       </div>
     </nav>
@@ -269,8 +270,8 @@ const year = new Date().getFullYear();
           mañana, una lectura clara de cómo viene el mes y qué hay que resolver.
         </p>
         <div class="hero-actions">
-          <a href={demoHref} class="btn btn-primary btn-lg">Pedir una demo</a>
-          <a href="#panel" class="btn btn-lg">Ver qué muestra</a>
+          <a href={waitlistHref} class="btn btn-primary btn-lg">Unirme a la lista de espera</a>
+          <a href="#semilla" class="btn btn-lg">Quiero ser club semilla</a>
         </div>
         <p class="hero-note">Se adapta a cómo trabaja hoy tu club: el mostrador carga, el panel responde.</p>
 
@@ -374,8 +375,8 @@ const year = new Date().getFullYear();
         <h2>Simple y predecible.</h2>
         <div class="price">
           <div class="price-card">
-            <div class="amount">2 alquileres <small>de cancha por mes</small></div>
-            <p class="price-note">Un abono mensual en pesos, por club, que vale lo mismo que dos alquileres de cancha.</p>
+            <div class="amount">Suscripción mensual</div>
+            <p class="price-note">Un abono mensual por club, a precio fijo.</p>
             <ul>
               <li>Canchas, socios y usuarios sin límite</li>
               <li>Panel completo con las seis respuestas</li>
@@ -383,7 +384,7 @@ const year = new Date().getFullYear();
               <li>Exportación para el contador</li>
               <li>Soporte directo por WhatsApp</li>
             </ul>
-            <a href={demoHref} class="btn btn-primary">Pedir una demo</a>
+            <a href={waitlistHref} class="btn btn-primary">Unirme a la lista de espera</a>
           </div>
           <div class="seed" id="semilla">
             <h3>Programa Clubes Semilla</h3>
