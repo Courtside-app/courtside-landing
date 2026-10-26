@@ -33,4 +33,4 @@ Antes de publicar, completar `contactWhatsApp`, `contactEmail` y `adminAppUrl` a
 
 ## Deploy
 
-Azure Static Web Apps, tier Free, recurso `swa-courtside-landing` en `rg-courtside-prod` (mismo grupo que la API). El Action `.github/workflows/azure-static-web-apps.yml` publica en cada push a `master`; necesita el secret `AZURE_STATIC_WEB_APPS_API_TOKEN`. Dominio propio: pendiente, se agrega desde el recurso en Azure y después se ajusta `adminAppUrl`.
+Azure Static Web Apps, tier Free, recurso `swa-courtside-landing` en `rg-courtside-prod` (mismo grupo que la API). El Action `.github/workflows/azure-static-web-apps.yml` publica en cada push a `master`; necesita el secret `AZURE_STATIC_WEB_APPS_API_TOKEN`. Dominio propio: `raketsense.com` y `www.raketsense.com` (DNS en Cloudflare, sin proxy; validados desde el recurso en Azure). `adminAppUrl` apunta a `https://app.raketsense.com/login`.
