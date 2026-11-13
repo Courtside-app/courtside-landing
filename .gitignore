@@ -26,3 +26,7 @@ pnpm-debug.log*
 # Claude Code / local design references
 .claude/
 Mejora de diseño de aplicación - landing/
+
+# cuadros intermedios del video
+video-src/_cuadros/
+video-src/_prueba/

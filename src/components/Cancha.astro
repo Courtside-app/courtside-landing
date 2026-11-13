@@ -1,0 +1,51 @@
+---
+// Vista aérea dibujada de un club. Es el respaldo de <Foto> mientras no esté
+// la foto real: cuando se agrega el archivo en public/img/, deja de verse.
+interface Props { variante?: 'polvo' | 'padel' }
+const { variante = 'polvo' } = Astro.props;
+
+const esPadel = variante === 'padel';
+const W = esPadel ? 440 : 512; // ancho de cada cancha con su contorno
+const H = esPadel ? 240 : 256;
+const SEP = 44;
+const columnas = 5;
+const filas = 6;
+const tonos = esPadel ? ['#1d3640', '#21404b', '#1a313a'] : ['#c4582e', '#bb5129', '#cc6236'];
+const canchas = Array.from({ length: columnas * filas }, (_, i) => ({
+  x: (i % columnas) * (W + SEP),
+  y: Math.floor(i / columnas) * (H + SEP),
+  tono: tonos[(i * 7 + Math.floor(i / columnas)) % tonos.length],
+}));
+---
+
+<svg class="cancha" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <rect width="1600" height="1000" fill={esPadel ? '#0d1214' : '#15110e'}></rect>
+  <g transform="rotate(-16 800 500) translate(-520 -330)">
+    {canchas.map((c) => (
+      <g transform={`translate(${c.x} ${c.y})`}>
+        <rect width={W} height={H} rx="4" fill={c.tono}></rect>
+        {esPadel ? (
+          <g fill="none" stroke="#fff" stroke-opacity="0.9" stroke-width="2.5">
+            <rect x="20" y="20" width="400" height="200" stroke-opacity="0.35" stroke-width="5"></rect>
+            <line x1="220" y1="20" x2="220" y2="220" stroke-width="3.5"></line>
+            <line x1="81" y1="20" x2="81" y2="220"></line>
+            <line x1="359" y1="20" x2="359" y2="220"></line>
+            <line x1="81" y1="120" x2="359" y2="120"></line>
+          </g>
+        ) : (
+          <g fill="none" stroke="#fff" stroke-opacity="0.92" stroke-width="2.5">
+            <rect x="89.5" y="51" width="333" height="154"></rect>
+            <line x1="89.5" y1="70" x2="422.5" y2="70"></line>
+            <line x1="89.5" y1="186" x2="422.5" y2="186"></line>
+            <line x1="166" y1="70" x2="166" y2="186"></line>
+            <line x1="346" y1="70" x2="346" y2="186"></line>
+            <line x1="166" y1="128" x2="346" y2="128"></line>
+            <line x1="256" y1="42" x2="256" y2="214" stroke-width="3.5"></line>
+            <line x1="89.5" y1="128" x2="97" y2="128"></line>
+            <line x1="415" y1="128" x2="422.5" y2="128"></line>
+          </g>
+        )}
+      </g>
+    ))}
+  </g>
+</svg>

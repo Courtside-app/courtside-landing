@@ -1,416 +1,301 @@
 ---
-// ── Configuración de contacto y destino ──────────────────────────────────
-// El onboarding es asistido (uno por uno): la landing no manda a registrarse,
-// manda a hablar. Completar antes de publicar:
-//   contactWhatsApp: número en formato internacional sin "+", p. ej. "5491155551234"
-//   contactEmail:    casilla del proyecto en el dominio propio
-//   adminAppUrl:     URL del panel (login) una vez desplegado
-const contactWhatsApp = '5491165916614';
-const contactEmail = 'contacto@raketsense.com';
-const adminAppUrl = 'https://app.raketsense.com/login';
-
-// Cada CTA abre WhatsApp con su propio mensaje; sin WhatsApp, mail; sin nada,
-// el recuadro de clubes semilla.
-const contactHref = (message: string, subject: string) =>
-  contactWhatsApp
-    ? `https://wa.me/${contactWhatsApp}?text=${encodeURIComponent(message)}`
-    : contactEmail
-      ? `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}`
-      : '#semilla';
-// Dos puertas de entrada: lista de espera (cualquier club) y Clubes Semilla.
-const waitlistHref = contactHref(
-  'Hola, administro un club de tenis/pádel y quiero sumarme a la lista de espera de RaketSense.',
-  'Lista de espera de RaketSense',
-);
-const seedHref = contactHref(
-  'Hola, quiero que mi club sea parte del programa Clubes Semilla de RaketSense.',
-  'Programa Clubes Semilla',
-);
-
-const year = new Date().getFullYear();
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { demoUrl, waitlistHref } from '../lib/contacto';
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <meta
-      name="description"
-      content="RaketSense: inteligencia para clubes de tenis y pádel. Toda la gestión del club en un solo lugar —reservas, caja, socios, profesores, academia y torneos— y un panel que te dice cómo va el club."
-    />
-    <meta property="og:title" content="RaketSense — Inteligencia para clubes de tenis y pádel" />
-    <meta
-      property="og:description"
-      content="Gestión integral y analítica para quien administra el club. Cada mañana, una lectura de cómo viene el mes y qué hay que resolver."
-    />
-    <meta property="og:type" content="website" />
-    <title>RaketSense — Inteligencia para clubes de tenis y pádel</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      /* Mismo sistema que el panel: negro, un solo acento naranja, hairlines,
-         radios chicos, números tabulares. El color marca lo accionable. */
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<Base
+  title="RaketSense — Inteligencia de negocio para clubes de tenis y pádel"
+  description="RaketSense: inteligencia de negocio para clubes de tenis y pádel. Toda la gestión del club en un solo lugar —reservas, caja, socios, profesores, academia y torneos— y un panel que te dice cómo va el club."
+  ogDescription="Gestión integral e inteligencia de negocio para quien administra el club. Cada mañana, una lectura de cómo viene el mes y qué hay que resolver."
+>
+  <style>
+    /* Panel de ejemplo, montado sobre el borde de la portada. */
+    .panel-sobre { margin-top: -7.5rem; position: relative; z-index: 2; padding-bottom: 1rem; }
+    .verdict {
+      border: 1px solid var(--border); border-radius: 9px; background: var(--surface); overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    }
+    .verdict-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 0.6rem 1rem; border-bottom: 1px solid var(--hair);
+      font-size: 0.78rem; color: var(--muted);
+    }
+    .verdict-bar b { color: var(--ink2); font-weight: 600; }
+    .verdict-body { padding: 1.25rem 1rem 1rem; }
+    .verdict-body .eyebrow { margin-bottom: 0.4rem; }
+    .verdict-body h3 { font-size: clamp(1.15rem, 2.4vw, 1.5rem); letter-spacing: -0.02em; line-height: 1.2; }
+    .verdict-body p { color: var(--ink2); margin-top: 0.35rem; font-size: 0.95rem; }
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--hair); }
+    .kpi { padding: 0.9rem 1rem; border-right: 1px solid var(--hair); }
+    .kpi:last-child { border-right: 0; }
+    .kpi .k { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .kpi .v { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 0.15rem; }
+    .kpi .d { font-size: 0.75rem; color: var(--muted); }
+    .kpi .neg { color: var(--accent-ink); }
+    .todo { border-top: 1px solid var(--hair); }
+    .todo-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--hair); font-size: 0.9rem; }
+    .todo-row:last-child { border-bottom: 0; }
+    .todo-row small { display: block; color: var(--muted); font-size: 0.8rem; }
+    .todo-row .act { color: var(--accent-ink); font-weight: 600; white-space: nowrap; }
+    @media (max-width: 640px) {
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .kpi:nth-child(2) { border-right: 0; }
+      .kpi:nth-child(-n + 2) { border-bottom: 1px solid var(--hair); }
+    }
 
-      :root {
-        --bg: #ffffff;
-        --surface: #fafafa;
-        --surface2: #f3f3f2;
-        --border: #e6e6e4;
-        --hair: #ededeb;
-        --ink: #0a0a0a;
-        --ink2: #3d3d3b;
-        --muted: #7a7a76;
-        --accent: #e2683a;
-        --accent-ink: #b84f26;
-        --accent-soft: rgba(226, 104, 58, 0.12);
-        --track: #e9e9e7;
-        --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0a0a0a;
-          --surface: #121211;
-          --surface2: #1a1a19;
-          --border: #262625;
-          --hair: #1f1f1e;
-          --ink: #f2f2f0;
-          --ink2: #c9c9c5;
-          --muted: #8a8a86;
-          --accent: #e2683a;
-          --accent-ink: #f08a62;
-          --accent-soft: rgba(226, 104, 58, 0.18);
-          --track: #2a2a29;
-        }
-      }
+    /* El club entero: tres tarjetas con foto. */
+    .vida { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 2rem; }
+    .vida-card { border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: var(--surface); transition: transform 250ms ease, border-color 250ms ease; }
+    .vida-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .vida-captura { aspect-ratio: 16 / 10; overflow: hidden; background: #0a0a0a; border-bottom: 1px solid var(--hair); }
+    .vida-captura :global(.foto) { transition: transform 900ms ease; }
+    .vida-card:hover .vida-captura :global(.foto) { transform: scale(1.05); }
+    .vida-texto { padding: 1rem 1.1rem 1.15rem; }
+    .vida-texto b { display: block; font-size: 1.15rem; letter-spacing: -0.02em; }
+    .vida-texto span { font-size: 0.9rem; color: var(--ink2); }
+    @media (max-width: 760px) { .vida { grid-template-columns: 1fr; } }
 
-      html { scroll-behavior: smooth; }
-      body {
-        font-family: var(--font);
-        color: var(--ink);
-        background: var(--bg);
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-        text-wrap: pretty;
-        font-variant-numeric: tabular-nums;
-      }
-      a { color: inherit; }
-      .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
-      .eyebrow {
-        font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
-        text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem;
-      }
-      h2 { font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 0.5rem; }
-      .lead { color: var(--ink2); font-size: 1.05rem; max-width: 60ch; }
+    .questions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem 2rem; margin-top: 2rem; }
+    @media (max-width: 900px) { .questions { grid-template-columns: repeat(2, 1fr); } }
+    .q { border-left: 2px solid var(--accent); padding-left: 1rem; }
+    .q b { display: block; font-size: 1.05rem; letter-spacing: -0.01em; }
+    .q span { color: var(--ink2); font-size: 0.92rem; }
+    @media (max-width: 640px) { .questions { grid-template-columns: 1fr; } }
 
-      /* ── NAV ─────────────────────────────────────────────── */
-      .nav {
-        position: sticky; top: 0; z-index: 10;
-        background: color-mix(in srgb, var(--bg) 92%, transparent);
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        border-bottom: 1px solid var(--hair);
-      }
-      .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-      .logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; }
-      .logo img { width: 26px; height: 26px; }
-      .logo .side { color: var(--accent); }
-      .nav-links { display: flex; gap: 1.25rem; align-items: center; font-size: 0.9rem; }
-      .nav-links a { text-decoration: none; color: var(--ink2); }
-      .nav-links a:hover { color: var(--ink); }
-      @media (max-width: 640px) { .nav-links .hide-sm { display: none; } }
+    /* Demo: banda oscura con la demo en un marco de navegador. */
+    .demo { border-top: 0 !important; }
+    .demo-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 3rem; align-items: center; }
+    .demo .lead { margin: 0.5rem 0 1.5rem; }
+    .demo-pasos { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.75rem; }
+    .demo-pasos span { font-size: 0.8rem; padding: 0.25rem 0.6rem; border: 1px solid var(--border); border-radius: 999px; color: var(--ink2); }
+    .marco { display: block; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: #121211; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5); text-decoration: none; transition: transform 250ms ease; }
+    .marco:hover { transform: translateY(-4px); }
+    .marco-barra { display: flex; align-items: center; gap: 6px; padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--hair); font-size: 0.72rem; color: var(--muted); }
+    .marco-barra i { width: 9px; height: 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); }
+    .marco-barra span { margin-left: 0.6rem; }
+    .marco-cuerpo { aspect-ratio: 1200 / 630; }
+    @media (max-width: 860px) { .demo-grid { grid-template-columns: 1fr; gap: 2rem; } }
 
-      .btn {
-        display: inline-flex; align-items: center; gap: 0.4rem;
-        padding: 0.6rem 1.1rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem;
-        text-decoration: none; border: 1px solid var(--border); background: var(--bg); color: var(--ink);
-        transition: background 120ms, border-color 120ms;
-      }
-      .btn:hover { background: var(--surface2); }
-      .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-      .btn-primary:hover { background: var(--accent-ink); border-color: var(--accent-ink); }
-      .btn-lg { padding: 0.8rem 1.4rem; font-size: 1rem; }
+    /* Quiénes: foto + trayectoria, en una franja baja. */
+    .quienes { display: grid; grid-template-columns: 1fr 1.1fr; gap: 2.5rem; align-items: center; }
+    /* Las dos caras: el club y la IA, lado a lado. */
+    .caras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .cara { position: relative; aspect-ratio: 4 / 5; border-radius: 9px; overflow: hidden; background: #0a0a0a; }
+    .cara-club :global(.foto) { object-position: 20% center; }
+    .cara-ia :global(.foto) { object-position: 12% 20%; }
+    .cara figcaption { position: absolute; left: 10px; bottom: 10px; padding: 0.3rem 0.65rem; border-radius: 999px; font-size: 0.76rem; font-weight: 600; color: #f5f5f3; background: rgba(10, 10, 10, 0.78); backdrop-filter: blur(4px); }
+    .cara figcaption.acento { background: var(--accent); color: #fff; }
+    .quienes .lead { margin-top: 0.5rem; }
+    .hitos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--hair); border: 1px solid var(--hair); border-radius: 7px; overflow: hidden; margin-top: 1.25rem; }
+    .hito { background: var(--bg); padding: 0.85rem 1rem; }
+    .hito b { display: block; font-size: 1.3rem; letter-spacing: -0.03em; }
+    .hito span { font-size: 0.82rem; color: var(--ink2); }
+    @media (max-width: 860px) { .quienes { grid-template-columns: 1fr; gap: 1.5rem; } }
+    @media (max-width: 520px) { .hitos { grid-template-columns: 1fr; } }
 
-      /* ── HERO ────────────────────────────────────────────── */
-      .hero { padding: 5rem 0 3.5rem; }
-      .pill {
-        display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.25rem 0.6rem; margin-bottom: 1.5rem;
-        padding: 0.6rem 1.1rem; border: 1px solid var(--accent); border-radius: 999px;
-        font-size: 1rem; color: var(--ink); text-decoration: none; background: var(--accent-soft);
-      }
-      .pill:hover { border-color: var(--accent); }
-      .pill b { color: var(--accent-ink); font-weight: 600; }
-      .hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; max-width: 18ch; }
-      .hero h1 span { color: var(--accent); }
-      .hero .lead { margin: 1.25rem 0 2rem; font-size: 1.15rem; }
-      .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-      .hero-note { margin-top: 1rem; font-size: 0.85rem; color: var(--muted); }
+    /* Precio + Clubes Semilla: dos tarjetas gemelas (misma estructura, mismo alto, botón al pie). */
+    .price { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: stretch; margin-top: 2rem; }
+    .price-card { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); padding: 1.75rem; }
+    .price-card.seed { border-color: var(--accent); background: var(--accent-soft); }
+    .price-card h3 { font-size: 1.4rem; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 0.5rem; }
+    .price-card p { color: var(--ink2); font-size: 0.95rem; min-height: 3em; }
+    .price-card .lista { margin: 1.1rem 0 1.5rem; }
+    .price-card .btn { margin-top: auto; align-self: flex-start; }
+    @media (max-width: 760px) { .price { grid-template-columns: 1fr; } .price-card p { min-height: 0; } }
+  </style>
 
-      /* Veredicto: la pantalla que el dueño ve cada mañana, como texto real. */
-      .verdict {
-        margin-top: 3rem; border: 1px solid var(--border); border-radius: 7px;
-        background: var(--surface); overflow: hidden;
-      }
-      .verdict-bar {
-        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-        padding: 0.6rem 1rem; border-bottom: 1px solid var(--hair);
-        font-size: 0.78rem; color: var(--muted);
-      }
-      .verdict-bar b { color: var(--ink2); font-weight: 600; }
-      .verdict-body { padding: 1.25rem 1rem 1rem; }
-      .verdict-body .eyebrow { margin-bottom: 0.4rem; }
-      .verdict-body h3 { font-size: clamp(1.15rem, 2.4vw, 1.5rem); letter-spacing: -0.02em; line-height: 1.2; }
-      .verdict-body p { color: var(--ink2); margin-top: 0.35rem; font-size: 0.95rem; }
-      .kpis { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--hair); }
-      .kpi { padding: 0.9rem 1rem; border-right: 1px solid var(--hair); }
-      .kpi:last-child { border-right: 0; }
-      .kpi .k { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-      .kpi .v { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 0.15rem; }
-      .kpi .d { font-size: 0.75rem; color: var(--muted); }
-      .kpi .neg { color: var(--accent-ink); }
-      .todo { border-top: 1px solid var(--hair); }
-      .todo-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--hair); font-size: 0.9rem; }
-      .todo-row:last-child { border-bottom: 0; }
-      .todo-row small { display: block; color: var(--muted); font-size: 0.8rem; }
-      .todo-row .act { color: var(--accent-ink); font-weight: 600; white-space: nowrap; }
-      @media (max-width: 640px) {
-        .kpis { grid-template-columns: repeat(2, 1fr); }
-        .kpi:nth-child(2) { border-right: 0; }
-        .kpi:nth-child(-n + 2) { border-bottom: 1px solid var(--hair); }
-      }
+  <!-- PORTADA -->
+  <header class="hero sobre-oscuro">
+    <div class="hero-media"><Foto nombre="portada" alt="Canchas de polvo de ladrillo vistas desde arriba" prioridad /></div>
+    <div class="wrap">
+      <a href="/club-semilla" class="pill"><b>Próximo lanzamiento</b> Programa Clubes Semilla abierto →</a>
+      <p class="eyebrow">Tenis · Pádel · Gestión con inteligencia artificial</p>
+      <h1>Inteligencia de negocio <span>para tu club.</span></h1>
+      <p class="lead">
+        RaketSense reúne toda la gestión del club —reservas, caja, socios, profesores,
+        academia y torneos— y la convierte en inteligencia: cada mañana, una lectura
+        clara de cómo viene el mes y qué hay que resolver.
+      </p>
+      <div class="hero-actions">
+        <a href={demoUrl} class="btn btn-primary btn-lg">Probá la demo</a>
+        <a href="/club-semilla" class="btn btn-lg">Quiero ser Club Semilla</a>
+      </div>
+      <p class="hero-note">Siete pasos en un club de ejemplo. Sin registrarte.</p>
+    </div>
+  </header>
 
-      /* ── SECCIONES ───────────────────────────────────────── */
-      section { padding: 4.5rem 0; }
-      section + section { border-top: 1px solid var(--hair); }
-      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--hair); border: 1px solid var(--hair); border-radius: 7px; overflow: hidden; margin-top: 2rem; }
-      .cell { background: var(--bg); padding: 1.25rem; }
-      .cell h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
-      .cell p { font-size: 0.9rem; color: var(--ink2); }
-      .cell .tag { display: inline-block; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft); padding: 0.15rem 0.45rem; border-radius: 4px; margin-bottom: 0.6rem; }
-      @media (max-width: 860px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
-      @media (max-width: 560px) { .grid-3 { grid-template-columns: 1fr; } }
+  <!-- La pantalla que el dueño ve cada mañana, en texto real. -->
+  <div class="wrap panel-sobre">
+    <div class="verdict aparece" id="panel" aria-label="Ejemplo del panel">
+      <div class="verdict-bar">
+        <span><b>Panel</b> · Parque Tenis Club</span>
+        <span>Septiembre · actualizado 08:10</span>
+      </div>
+      <div class="verdict-body">
+        <p class="eyebrow">Cómo va el club</p>
+        <h3>Septiembre viene 6% abajo, con la ocupación de los martes a la noche en 40%.</h3>
+        <p>Hay $ 1.240.000 jugados y sin cobrar. La academia sostiene el mes.</p>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="k">Ingresos</div><div class="v">$ 13,6 M</div><div class="d neg">−6% vs agosto</div></div>
+        <div class="kpi"><div class="k">Por cobrar</div><div class="v">$ 1,24 M</div><div class="d">reservas jugadas</div></div>
+        <div class="kpi"><div class="k">Ocupación</div><div class="v">36%</div><div class="d">sobre canchas activas</div></div>
+        <div class="kpi"><div class="k">Resultado</div><div class="v">$ 4,1 M</div><div class="d">margen 30%</div></div>
+      </div>
+      <div class="todo">
+        <div class="todo-row"><div>3 socios que dejaron de venir<small>Jugaban 2 veces por semana hasta julio.</small></div><span class="act">Ver quiénes →</span></div>
+        <div class="todo-row"><div>1 cierre de caja con diferencia<small>Faltante de $ 12.500 el 14/09.</small></div><span class="act">Ver cierre →</span></div>
+        <div class="todo-row"><div>2 grupos de academia con lugar<small>Sub-14 martes y jueves: quedan 4 cupos.</small></div><span class="act">Ver grupos →</span></div>
+      </div>
+    </div>
+  </div>
 
-      .questions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2.5rem; margin-top: 2rem; }
-      .q { border-left: 2px solid var(--accent); padding-left: 1rem; }
-      .q b { display: block; font-size: 1.05rem; letter-spacing: -0.01em; }
-      .q span { color: var(--ink2); font-size: 0.92rem; }
-      @media (max-width: 640px) { .questions { grid-template-columns: 1fr; } }
-
-      .steps { counter-reset: s; margin-top: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-      .step { position: relative; padding-top: 2.4rem; }
-      .step::before {
-        counter-increment: s; content: counter(s);
-        position: absolute; top: 0; left: 0; width: 1.8rem; height: 1.8rem;
-        border-radius: 999px; background: var(--ink); color: var(--bg);
-        display: grid; place-items: center; font-weight: 700; font-size: 0.85rem;
-      }
-      .step h3 { font-size: 1rem; margin-bottom: 0.3rem; }
-      .step p { color: var(--ink2); font-size: 0.92rem; }
-      @media (max-width: 720px) { .steps { grid-template-columns: 1fr; gap: 1.5rem; } }
-
-      /* ── PRECIO ──────────────────────────────────────────── */
-      .price { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2.5rem; align-items: start; margin-top: 2rem; }
-      .price-card { border: 1px solid var(--border); border-radius: 7px; background: var(--surface); padding: 1.5rem; }
-      .price-card .amount { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em; }
-      .price-card .amount small { font-size: 1rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
-      .price-note { margin-top: 0.4rem; font-size: 0.92rem; color: var(--ink2); }
-      .price-card ul { list-style: none; margin: 1rem 0 1.5rem; display: grid; gap: 0.5rem; font-size: 0.92rem; color: var(--ink2); }
-      .price-card li::before { content: '—'; color: var(--accent); margin-right: 0.5rem; }
-      .seed { border: 1px solid var(--accent); border-radius: 7px; padding: 1.5rem; background: var(--accent-soft); }
-      .seed h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
-      .seed p { color: var(--ink2); font-size: 0.95rem; }
-      .seed ul { list-style: none; margin: 0.9rem 0 0.75rem; display: grid; gap: 0.4rem; font-size: 0.92rem; color: var(--ink2); }
-      .seed li::before { content: '—'; color: var(--accent); margin-right: 0.5rem; }
-      .seed .fine { font-size: 0.85rem; color: var(--muted); }
-      .seed .btn { margin-top: 1rem; }
-
-      .vision { margin-top: 1.5rem; font-size: 0.95rem; color: var(--muted); max-width: 60ch; }
-      @media (max-width: 760px) { .price { grid-template-columns: 1fr; } }
-
-      /* ── FOOTER ──────────────────────────────────────────── */
-      footer { border-top: 1px solid var(--hair); padding: 2rem 0; font-size: 0.85rem; color: var(--muted); }
-      .foot { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-      footer a { color: var(--ink2); text-decoration: none; }
-      footer a:hover { color: var(--ink); }
-    </style>
-  </head>
-
-  <body>
-    <nav class="nav">
-      <div class="wrap nav-inner">
-        <a href="/" class="logo">
-          <img src="/logo-mark.svg" alt="" width="26" height="26" />
-          <span>Raket<span class="side">Sense</span></span>
-        </a>
-        <div class="nav-links">
-          <a href="#panel" class="hide-sm">El panel</a>
-          <a href="#inteligencia" class="hide-sm">Inteligencia</a>
-          <a href="#gestion" class="hide-sm">Gestión</a>
-          <a href="#semilla" class="hide-sm">Clubes semilla</a>
-          <a href={adminAppUrl} class="hide-sm">Ingresar</a>
-          <a href={waitlistHref} class="btn btn-primary">Lista de espera</a>
+  <!-- EL CLUB ENTERO: tres fotos (cuando esté el club demo, capturas del panel) -->
+  <section class="primera">
+    <div class="wrap">
+      <p class="eyebrow aparece">Para clubes de raqueta</p>
+      <h2 class="aparece">Un club es mucho más que una grilla de turnos.</h2>
+      <p class="lead aparece">Canchas, gente, profesores, chicos que arrancan. RaketSense mira el club entero, no solo las reservas.</p>
+      <div class="vida">
+        <div class="vida-card aparece">
+          <div class="vida-captura"><Foto nombre="tenis" alt="Saque en una cancha de polvo de ladrillo, visto desde arriba" /></div>
+          <div class="vida-texto"><b>Tenis</b><span>Turnos fijos, socios de toda la vida y canchas que hay que cuidar.</span></div>
+        </div>
+        <div class="vida-card aparece t1">
+          <div class="vida-captura"><Foto nombre="padel" alt="Paletas y pelotas sobre una cancha de pádel azul" variante="padel" /></div>
+          <div class="vida-texto"><b>Pádel</b><span>Turnos de hora y media, noches llenas y mañanas por llenar.</span></div>
+        </div>
+        <div class="vida-card aparece t2">
+          <div class="vida-captura"><Foto nombre="academia" alt="Una mano saca una pelota del canasto de la clase" /></div>
+          <div class="vida-texto"><b>Academia</b><span>Grupos por edad y nivel, cuotas al día y profes con la agenda completa.</span></div>
         </div>
       </div>
-    </nav>
+    </div>
+  </section>
 
-    <!-- HERO -->
-    <header class="hero">
-      <div class="wrap">
-        <a href="#semilla" class="pill"><b>Próximo lanzamiento</b> Programa Clubes Semilla abierto →</a>
-        <p class="eyebrow">Inteligencia para clubes de tenis y pádel</p>
-        <h1>Conocé cómo va tu club <span>antes de que te lo cuenten.</span></h1>
-        <p class="lead">
-          RaketSense reúne toda la gestión del club —reservas, caja, socios,
-          profesores, academia y torneos— y la convierte en inteligencia: cada
-          mañana, una lectura clara de cómo viene el mes y qué hay que resolver.
+  <!-- QUIÉNES -->
+  <section id="quienes">
+    <div class="wrap quienes">
+      <div class="caras aparece">
+        <figure class="cara cara-club">
+          <Foto nombre="equipo" alt="En la cancha de polvo de ladrillo, con una clase de fondo" />
+          <figcaption>En el club</figcaption>
+        </figure>
+        <figure class="cara cara-ia">
+          <Foto nombre="equipo-ia" alt="Dando una charla sobre agentes de inteligencia artificial" />
+          <figcaption class="acento">En la inteligencia artificial</figcaption>
+        </figure>
+      </div>
+      <div>
+        <p class="eyebrow aparece">Quiénes lo hacemos</p>
+        <h2 class="aparece">Hecho por gente de club.</h2>
+        <p class="lead aparece">
+          RaketSense nace adentro de un club. Lo dirige un profesor de educación física y
+          licenciado en gestión que estuvo más de quince años al frente de una academia de
+          tenis, y que hoy es ingeniero en inteligencia artificial. Las dos caras en la misma
+          persona: por eso no arranca en la tecnología, arranca en el mostrador.
         </p>
-        <div class="hero-actions">
-          <a href={waitlistHref} class="btn btn-primary btn-lg">Unirme a la lista de espera</a>
-          <a href="#semilla" class="btn btn-lg">Quiero ser club semilla</a>
-        </div>
-        <p class="hero-note">Se adapta a cómo trabaja hoy tu club: el mostrador carga, el panel responde.</p>
-
-        <!-- La pantalla real, en texto. -->
-        <div class="verdict" id="panel" aria-label="Ejemplo del panel">
-          <div class="verdict-bar">
-            <span><b>Panel</b> · Parque Tenis Club</span>
-            <span>Septiembre · actualizado 08:10</span>
-          </div>
-          <div class="verdict-body">
-            <p class="eyebrow">Cómo va el club</p>
-            <h3>Septiembre viene 6% abajo, con la ocupación de los martes a la noche en 40%.</h3>
-            <p>Hay $ 1.240.000 jugados y sin cobrar. La academia sostiene el mes.</p>
-          </div>
-          <div class="kpis">
-            <div class="kpi"><div class="k">Ingresos</div><div class="v">$ 13,6 M</div><div class="d neg">−6% vs agosto</div></div>
-            <div class="kpi"><div class="k">Por cobrar</div><div class="v">$ 1,24 M</div><div class="d">reservas jugadas</div></div>
-            <div class="kpi"><div class="k">Ocupación</div><div class="v">36%</div><div class="d">sobre canchas activas</div></div>
-            <div class="kpi"><div class="k">Resultado</div><div class="v">$ 4,1 M</div><div class="d">margen 30%</div></div>
-          </div>
-          <div class="todo">
-            <div class="todo-row"><div>3 socios que dejaron de venir<small>Jugaban 2 veces por semana hasta julio.</small></div><span class="act">Ver quiénes →</span></div>
-            <div class="todo-row"><div>1 cierre de caja con diferencia<small>Faltante de $ 12.500 el 14/09.</small></div><span class="act">Ver cierre →</span></div>
-            <div class="todo-row"><div>2 grupos de academia con lugar<small>Sub-14 martes y jueves: quedan 4 cupos.</small></div><span class="act">Ver grupos →</span></div>
-          </div>
+        <div class="hitos aparece">
+          <div class="hito"><b>+15 años</b><span>dirigiendo una academia de tenis</span></div>
+          <div class="hito"><b>Gestión</b><span>licenciatura y oficio de club</span></div>
+          <div class="hito"><b>IA</b><span>ingeniería aplicada a tus datos</span></div>
         </div>
       </div>
-    </header>
+    </div>
+  </section>
 
-    <!-- PREGUNTAS -->
-    <section>
-      <div class="wrap">
-        <p class="eyebrow">Lo que responde</p>
-        <h2>Las seis preguntas que hoy contestás a ojo.</h2>
-        <p class="lead">Todo sale de lo que el mostrador carga todos los días. No hay planilla aparte.</p>
-        <div class="questions">
-          <div class="q"><b>¿De dónde viene la plata?</b><span>Ingresos por fuente: alquiler, academia, buffet, torneos. Cuál crece y cuál se cae.</span></div>
-          <div class="q"><b>¿Cuándo tengo las canchas vacías?</b><span>Ocupación por día y hora. La franja muerta del martes, con nombre y apellido.</span></div>
-          <div class="q"><b>¿Gané o perdí este mes?</b><span>Ingresos contra egresos, con costos reales de profesores y buffet, no facturación bruta.</span></div>
-          <div class="q"><b>¿Quién dejó de venir?</b><span>Socios en riesgo antes de que se vayan del todo. Retención es plata.</span></div>
-          <div class="q"><b>¿Cómo crece la academia?</b><span>Alumnos, clases y grupos por profesor, mes a mes. Datos para que cada profe llene su agenda y la academia crezca.</span></div>
-          <div class="q"><b>¿Cómo vienen los cobros?</b><span>Cuenta corriente por familia, saldos claros y cobro directo desde la caja.</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- INTELIGENCIA: posicionamiento, no promesas de features. -->
-    <section id="inteligencia">
-      <div class="wrap">
-        <p class="eyebrow">Inteligencia</p>
-        <h2>Las apps de reservas te dicen quién jugó. RaketSense te dice cómo va el club.</h2>
-        <p class="lead">
-          Nacimos en la era de la inteligencia artificial y la usamos donde suma: sobre los datos
-          reales de tu club, no sobre suposiciones. Por eso primero ordenamos la operación, y
-          sobre esa base trabaja la inteligencia.
+  <!-- DEMO -->
+  <section class="demo sobre-oscuro" id="demo">
+    <div class="wrap demo-grid">
+      <div>
+        <p class="eyebrow aparece">Demo</p>
+        <h2 class="aparece">Probá un día en un club de pádel.</h2>
+        <p class="lead aparece">
+          Recorré Las Tipas Pádel, un club de ejemplo que usa RaketSense hace cuatro meses.
+          Siete pasos, a tu ritmo, sin registrarte.
         </p>
-        <div class="grid-3">
-          <div class="cell"><span class="tag">Datos</span><h3>Todo el club en un solo lugar</h3><p>Cada reserva, cobro, clase y socio queda registrado una sola vez. Es la base de todo lo demás.</p></div>
-          <div class="cell"><span class="tag">Lectura</span><h3>Respuestas, no planillas</h3><p>El panel cruza ocupación, ingresos, costos y asistencia, y te dice en una frase qué está pasando y qué atender.</p></div>
-          <div class="cell"><span class="tag">IA</span><h3>Inteligencia artificial sobre tus datos</h3><p>Pensada desde el primer día para trabajar con IA. Cuanta más historia tiene tu club, más profundas son las respuestas.</p></div>
+        <div class="demo-pasos aparece">
+          <span>Abrir la caja</span><span>Reservar una cancha</span><span>Cobrar</span><span>Encontrar las horas flojas</span><span>Cerrar la caja</span>
         </div>
-        <p class="vision">Hoy, tenis y pádel. Nuestra meta: ser la referencia tecnológica de los clubes de raqueta.</p>
+        <a href={demoUrl} class="btn btn-primary btn-lg aparece">Probá la demo →</a>
       </div>
-    </section>
+      <a href={demoUrl} class="marco aparece t1" aria-label="Abrir la demo de RaketSense">
+        <div class="marco-barra"><i></i><i></i><i></i><span>{new URL(demoUrl).host}</span></div>
+        <div class="marco-cuerpo"><Foto nombre="demo" alt="Grilla de reservas de la demo de RaketSense" variante="padel" /></div>
+      </a>
+    </div>
+  </section>
 
-    <!-- GESTIÓN INTEGRAL -->
-    <section id="gestion">
-      <div class="wrap">
-        <p class="eyebrow">Gestión integral</p>
-        <h2>La captura del dato, sin cambiar cómo trabaja tu gente.</h2>
-        <p class="lead">El socio sigue reservando por WhatsApp o en el mostrador. El staff lo carga en segundos, y de ahí sale todo lo demás.</p>
-        <div class="grid-3">
-          <div class="cell"><span class="tag">Reservas</span><h3>Grilla por cancha y hora</h3><p>Eventuales, fijos semanales, clases y academia en la misma grilla. Sin doble reserva: lo garantiza la base, no la memoria del mostrador.</p></div>
-          <div class="cell"><span class="tag">Caja</span><h3>Apertura, cobros, arqueo y cierre Z</h3><p>Efectivo, transferencia, tarjeta o cuenta corriente. Cada peso queda en un libro que no se edita: se revierte.</p></div>
-          <div class="cell"><span class="tag">Socios</span><h3>Padrón, categorías y precios diferenciales</h3><p>Socio, abonado, cliente. Responsable de pago por familia, carnet al día, cuenta corriente.</p></div>
-          <div class="cell"><span class="tag">Canchas</span><h3>Tarifas por franja y mantenimiento</h3><p>Precio por categoría y horario. Tareas de mantenimiento con costo, que entran al resultado del club.</p></div>
-          <div class="cell"><span class="tag">Profesores y academia</span><h3>Clases, grupos y cuotas</h3><p>Disponibilidad, clases particulares, grupos por edad y nivel con cuota mensual. Lo que cobra el club y lo que le paga al profe.</p></div>
-          <div class="cell"><span class="tag">Torneos</span><h3>Inscripción, cuadro y programación</h3><p>Eliminación o round robin. Cada partido programado ocupa la cancha de verdad, y la inscripción se cobra en caja.</p></div>
+  <!-- INTELIGENCIA: posicionamiento + las seis preguntas. Sin promesas de funciones de IA. -->
+  <section id="inteligencia">
+    <div class="wrap">
+      <p class="eyebrow aparece">Inteligencia</p>
+      <h2 class="aparece">Las apps de reservas te dicen quién jugó. RaketSense te dice cómo va el club.</h2>
+      <p class="lead aparece">
+        Seis preguntas que hoy contestás a ojo, respondidas con lo que el mostrador carga todos
+        los días. Pensado desde el primer día para trabajar con inteligencia artificial sobre los
+        datos reales de tu club.
+      </p>
+      <div class="questions">
+        <div class="q aparece"><b>¿De dónde viene la plata?</b><span>Ingresos por fuente: alquiler, academia, buffet, torneos. Cuál crece y cuál se cae.</span></div>
+        <div class="q aparece t1"><b>¿Cuándo tengo las canchas vacías?</b><span>Ocupación por día y hora. La franja muerta del martes, con nombre y apellido.</span></div>
+        <div class="q aparece t2"><b>¿Gané o perdí este mes?</b><span>Ingresos contra egresos, con costos reales de profesores y buffet, no facturación bruta.</span></div>
+        <div class="q aparece"><b>¿Quién dejó de venir?</b><span>Socios en riesgo antes de que se vayan del todo. Retención es plata.</span></div>
+        <div class="q aparece t1"><b>¿Cómo crece la academia?</b><span>Alumnos, clases y grupos por profesor, mes a mes. Datos para que cada profe llene su agenda.</span></div>
+        <div class="q aparece t2"><b>¿Cómo vienen los cobros?</b><span>Cuenta corriente por familia, saldos claros y cobro directo desde la caja.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GESTIÓN INTEGRAL -->
+  <section id="gestion">
+    <div class="wrap">
+      <p class="eyebrow aparece">Gestión integral</p>
+      <h2 class="aparece">La captura del dato, sin cambiar cómo trabaja tu gente.</h2>
+      <p class="lead aparece">El socio sigue reservando por WhatsApp o en el mostrador. El staff lo carga en segundos, y de ahí sale todo lo demás.</p>
+      <div class="grid-3 aparece">
+        <div class="cell"><span class="tag">Reservas</span><h3>Grilla por cancha y hora</h3><p>Eventuales, fijos semanales, clases y academia en la misma grilla. Sin doble reserva: lo garantiza la base, no la memoria del mostrador.</p></div>
+        <div class="cell"><span class="tag">Caja</span><h3>Apertura, cobros, arqueo y cierre Z</h3><p>Efectivo, transferencia, tarjeta o cuenta corriente. Cada peso queda en un libro que no se edita: se revierte.</p></div>
+        <div class="cell"><span class="tag">Socios</span><h3>Padrón, categorías y precios diferenciales</h3><p>Socio, abonado, cliente. Responsable de pago por familia, carnet al día, cuenta corriente.</p></div>
+        <div class="cell"><span class="tag">Canchas</span><h3>Tarifas por franja y mantenimiento</h3><p>Precio por categoría y horario. Tareas de mantenimiento con costo, que entran al resultado del club.</p></div>
+        <div class="cell"><span class="tag">Profesores y academia</span><h3>Clases, grupos y cuotas</h3><p>Disponibilidad, clases particulares, grupos por edad y nivel con cuota mensual. Lo que cobra el club y lo que le paga al profe.</p></div>
+        <div class="cell"><span class="tag">Torneos</span><h3>Inscripción, cuadro y programación</h3><p>Eliminación o round robin. Cada partido programado ocupa la cancha de verdad, y la inscripción se cobra en caja.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRECIO -->
+  <section id="precio">
+    <div class="wrap">
+      <p class="eyebrow aparece">Precio</p>
+      <h2 class="aparece">Simple y predecible.</h2>
+      <div class="price aparece">
+        <div class="price-card">
+          <h3>Suscripción mensual</h3>
+          <p>Un abono mensual por club, a precio fijo. Sin sorpresas a fin de mes.</p>
+          <ul class="lista">
+            <li>Canchas, socios y usuarios sin límite</li>
+            <li>Panel completo con las seis respuestas</li>
+            <li>Reservas, caja, socios, profesores, academia y torneos</li>
+            <li>Exportación para el contador</li>
+            <li>Soporte directo por WhatsApp</li>
+          </ul>
+          <a href={waitlistHref} class="btn btn-primary">Unirme a la lista de espera</a>
+        </div>
+        <div class="price-card seed" id="semilla">
+          <h3>Programa Clubes Semilla</h3>
+          <p>Un grupo reducido de clubes que nos acompaña desde el principio. Cupos limitados, de 3 a 20 canchas.</p>
+          <ul class="lista">
+            <li>Precio diferencial para siempre</li>
+            <li>Puesta en marcha en tu club, con nosotros al lado</li>
+            <li>Línea directa con el equipo que lo construye</li>
+            <li>Tu feedback define lo que se desarrolla después</li>
+            <li>Nadie arranca solo: te acompañamos las primeras semanas</li>
+          </ul>
+          <a href="/club-semilla" class="btn btn-primary">Quiero ser Club Semilla</a>
         </div>
       </div>
-    </section>
-
-    <!-- CÓMO EMPEZAR -->
-    <section>
-      <div class="wrap">
-        <p class="eyebrow">Cómo empezar</p>
-        <h2>Onboarding asistido. Nadie arranca solo.</h2>
-        <p class="lead">Lo hacemos con vos, en el club, con tus canchas y tus precios cargados el primer día.</p>
-        <div class="steps">
-          <div class="step"><h3>Una charla de 30 minutos</h3><p>Vemos cómo trabaja hoy el club: horarios, categorías, cómo cobran, qué duele.</p></div>
-          <div class="step"><h3>Configuración inicial con vos</h3><p>Canchas, tarifas, profesores y padrón cargados. El staff sale operando ese mismo día.</p></div>
-          <div class="step"><h3>El panel empieza a hablar</h3><p>A las dos semanas ya hay dato suficiente para la primera lectura del mes. Ahí ajustamos lo que haga falta.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRECIO -->
-    <section id="precio">
-      <div class="wrap">
-        <p class="eyebrow">Precio</p>
-        <h2>Simple y predecible.</h2>
-        <div class="price">
-          <div class="price-card">
-            <div class="amount">Suscripción mensual</div>
-            <p class="price-note">Un abono mensual por club, a precio fijo.</p>
-            <ul>
-              <li>Canchas, socios y usuarios sin límite</li>
-              <li>Panel completo con las seis respuestas</li>
-              <li>Reservas, caja, socios, profesores, academia y torneos</li>
-              <li>Exportación para el contador</li>
-              <li>Soporte directo por WhatsApp</li>
-            </ul>
-            <a href={waitlistHref} class="btn btn-primary">Unirme a la lista de espera</a>
-          </div>
-          <div class="seed" id="semilla">
-            <h3>Programa Clubes Semilla</h3>
-            <p>
-              Estamos por salir y sumamos un grupo reducido de clubes que nos acompañen desde el
-              principio: usan RaketSense en su operación diaria y nos dicen qué falta.
-            </p>
-            <ul>
-              <li>Precio diferencial para siempre, por haber estado desde el principio</li>
-              <li>Puesta en marcha en tu club, con nosotros al lado</li>
-              <li>Línea directa con el equipo que lo construye</li>
-              <li>Tu feedback define lo que se desarrolla después</li>
-            </ul>
-            <p class="fine">Cupos limitados. Clubes de 3 a 20 canchas.</p>
-            <a href={seedHref} class="btn btn-primary">Quiero ser club semilla</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <div class="wrap foot">
-        <span>© {year} RaketSense · Inteligencia para clubes de tenis y pádel</span>
-        <span><a href={adminAppUrl}>Ingresar al panel</a></span>
-      </div>
-    </footer>
-  </body>
-</html>
+    </div>
+  </section>
+</Base>
