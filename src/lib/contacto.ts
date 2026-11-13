@@ -8,9 +8,7 @@
 export const contactWhatsApp = '5491165916614';
 export const contactEmail = 'contacto@raketsense.com';
 export const adminAppUrl = 'https://app.raketsense.com/login';
-// Pasa a 'https://demo.raketsense.com' cuando ese dominio esté sumado al proyecto de Pages de la demo
-// (el CNAME ya existe; hasta entonces responde 403).
-export const demoUrl = 'https://raketsense-demo.pages.dev';
+export const demoUrl = 'https://demo.raketsense.com';
 
 // Cada CTA abre WhatsApp con su propio mensaje; sin WhatsApp, mail; sin nada,
 // la página de Clubes Semilla.
