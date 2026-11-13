@@ -95,7 +95,7 @@ Each CTA has its own WhatsApp message (`waitlistHref`, `helloHref`; the Clubes S
 - The **six questions** section mirrors `docs/strategy/README.md §7` in `courtside-admin`. If the Panel changes, change both.
 - No screenshots of the player app, no "reservá online", no "app para jugadores", no MercadoPago checkout.
 - Two pages (home + `/club-semilla`) and fast: no framework JS, only two tiny inline scripts (reveal on scroll, form → WhatsApp). The form stores nothing: it builds the WhatsApp message.
-- The demo link is `demoUrl` in `src/lib/contacto.ts` (guided demo, a separate static site on Cloudflare Pages). Today it points to `raketsense-demo.pages.dev`; switch it to `https://demo.raketsense.com` once that domain answers 200 (the browser frame on the home shows whatever host `demoUrl` has).
+- The demo link is `demoUrl` in `src/lib/contacto.ts` (guided demo, a separate static site on Cloudflare Pages): `https://demo.raketsense.com` since 13-nov-2026 (the browser frame on the home shows whatever host `demoUrl` has).
 - No price and no «meses gratis» on the page (decided 12-nov-2026).
 
 ## Deploy
