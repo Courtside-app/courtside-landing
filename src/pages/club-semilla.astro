@@ -1,0 +1,190 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { contactEmail, contactWhatsApp, demoUrl } from '../lib/contacto';
+
+// El video aparece solo cuando existe public/video/club-semilla.mp4
+// (y su portada opcional public/video/club-semilla.jpg).
+const carpetaVideo = path.join(process.cwd(), 'public', 'video');
+const hayVideo = fs.existsSync(path.join(carpetaVideo, 'club-semilla.mp4'));
+const hayPortada = fs.existsSync(path.join(carpetaVideo, 'club-semilla.jpg'));
+---
+
+<Base
+  title="Programa Clubes Semilla — RaketSense"
+  description="Buscamos pocos clubes de tenis y pádel, de 3 a 20 canchas, para empezar juntos: precio diferencial para siempre, alta hecha en tu club y acompañamiento directo."
+>
+  <style>
+    .video-sobre { margin-top: -3.5rem; position: relative; z-index: 2; }
+    .video { border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: #000; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); }
+    .video video { width: 100%; aspect-ratio: 16 / 9; }
+
+    .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 2rem; }
+    .caja { border: 1px solid var(--border); border-radius: 7px; padding: 1.5rem; background: var(--surface); }
+    .caja.destacada { border-color: var(--accent); background: var(--accent-soft); }
+    .caja h3 { font-size: 1.1rem; margin-bottom: 0.9rem; }
+    @media (max-width: 720px) { .dos { grid-template-columns: 1fr; } }
+
+    .preguntas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem 2rem; margin-top: 2rem; }
+    .preguntas div { border-left: 2px solid var(--accent); padding-left: 0.9rem; }
+    .preguntas b { display: block; }
+    .preguntas span { color: var(--ink2); font-size: 0.9rem; }
+    @media (max-width: 760px) { .preguntas { grid-template-columns: 1fr; } }
+
+    /* Formulario: arma el mensaje y abre WhatsApp. No guarda nada. */
+    .contacto { display: grid; grid-template-columns: 1fr 1.1fr; gap: 3rem; align-items: start; }
+    .contacto .lead { margin: 0.5rem 0 1.25rem; }
+    form { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; border: 1px solid var(--border); border-radius: 9px; padding: 1.5rem; background: var(--surface); }
+    form .ancho { grid-column: 1 / -1; }
+    label { display: grid; gap: 0.3rem; font-size: 0.82rem; font-weight: 600; color: var(--ink2); }
+    input, select {
+      font: inherit; font-weight: 400; color: var(--ink); background: var(--bg);
+      border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem 0.75rem; width: 100%;
+    }
+    input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+    form .btn { justify-content: center; }
+    form small { color: var(--muted); font-size: 0.8rem; }
+    @media (max-width: 860px) { .contacto { grid-template-columns: 1fr; gap: 2rem; } }
+    @media (max-width: 480px) { form { grid-template-columns: 1fr; } }
+  </style>
+
+  <header class="hero hero-corta sobre-oscuro">
+    <div class="hero-media"><Foto nombre="semilla" alt="Club de tenis y pádel al atardecer" prioridad /></div>
+    <div class="wrap">
+      <p class="eyebrow">Programa Clubes Semilla</p>
+      <h1>Buscamos pocos clubes para <span>empezar juntos.</span></h1>
+      <p class="lead">
+        Clubes de tenis y pádel, de 3 a 20 canchas, que quieran usar RaketSense de verdad y
+        ayudarnos a ajustarlo. A cambio, un lugar que no se vuelve a abrir.
+      </p>
+      <div class="hero-actions">
+        <a href="#contacto" class="btn btn-primary btn-lg">Quiero ser Club Semilla</a>
+        <a href={demoUrl} class="btn btn-lg">Probá la demo</a>
+      </div>
+      <p class="hero-note">Cupos limitados.</p>
+    </div>
+  </header>
+
+  {hayVideo && (
+    <div class="wrap video-sobre">
+      <div class="video aparece">
+        <video controls playsinline preload="metadata" poster={hayPortada ? '/video/club-semilla.jpg' : undefined}>
+          <source src="/video/club-semilla.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+  )}
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow aparece">El Club Semilla</p>
+      <h2 class="aparece">Lo usás de verdad. Lo ajustamos con vos.</h2>
+      <div class="dos">
+        <div class="caja destacada aparece">
+          <h3>Qué recibe tu club</h3>
+          <ul class="lista">
+            <li>Precio diferencial para siempre</li>
+            <li>Alta hecha juntos, en tu club</li>
+            <li>Acompañamiento directo</li>
+            <li>Tu voz en lo próximo que se construye</li>
+          </ul>
+        </div>
+        <div class="caja aparece t1">
+          <h3>Qué te pedimos</h3>
+          <ul class="lista">
+            <li>Uso real, todos los días</li>
+            <li>Que nos digas qué anda y qué no</li>
+            <li>Aviso apenas algo falla</li>
+            <li>Contar tu experiencia</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow aparece">Lo que responde el Panel</p>
+      <h2 class="aparece">Seis preguntas que hoy contestás a ojo.</h2>
+      <div class="preguntas">
+        <div class="aparece"><b>¿De dónde viene la plata?</b><span>Turnos, clases y buffet.</span></div>
+        <div class="aparece t1"><b>¿Cuándo están vacías las canchas?</b><span>Los horarios que no se venden.</span></div>
+        <div class="aparece t2"><b>¿Ganaste o perdiste este mes?</b><span>Ingresos menos gastos, sin cuentas a mano.</span></div>
+        <div class="aparece"><b>¿Quién dejó de venir?</b><span>Los que hace semanas no reservan.</span></div>
+        <div class="aparece t1"><b>¿Cómo crece la academia?</b><span>Alumnos, grupos y clases, mes a mes.</span></div>
+        <div class="aparece t2"><b>¿Cómo vienen los cobros?</b><span>Saldos claros, con nombre y monto.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow aparece">Cómo arrancamos</p>
+      <h2 class="aparece">Nadie arranca solo.</h2>
+      <div class="steps steps-4">
+        <div class="step aparece"><h3>Una charla</h3><p>Cómo funciona tu club hoy.</p></div>
+        <div class="step aparece t1"><h3>Cargamos tu club juntos</h3><p>En tu club, con los socios desde un Excel.</p></div>
+        <div class="step aparece t2"><h3>Práctica guiada</h3><p>Abrir la caja, reservar, cobrar y cerrar.</p></div>
+        <div class="step aparece t3"><h3>Semanas acompañadas</h3><p>El Panel te dice cómo va el club.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="wrap contacto">
+      <div>
+        <p class="eyebrow aparece">Sumate</p>
+        <h2 class="aparece">Contanos de tu club.</h2>
+        <p class="lead aparece">
+          Con cuatro datos alcanza. Te escribimos nosotros para coordinar una charla de media hora.
+        </p>
+        <ul class="lista aparece">
+          <li>Sin compromiso y sin tarjeta</li>
+          <li>Hablás con quien lo construye</li>
+          <li>Si no es para tu club, te lo decimos</li>
+        </ul>
+      </div>
+      <form id="form-semilla" class="aparece t1" data-whatsapp={contactWhatsApp} data-mail={contactEmail}>
+        <label>Tu nombre<input name="nombre" autocomplete="name" required /></label>
+        <label>Tu club<input name="club" autocomplete="organization" required /></label>
+        <label>Ciudad<input name="ciudad" autocomplete="address-level2" /></label>
+        <label>Canchas<input name="canchas" type="number" min="1" max="60" inputmode="numeric" /></label>
+        <label class="ancho">Deporte
+          <select name="deporte">
+            <option>Tenis</option>
+            <option>Pádel</option>
+            <option>Tenis y pádel</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn-primary btn-lg ancho">Enviar por WhatsApp</button>
+        <small class="ancho">Se abre WhatsApp con el mensaje armado; lo mandás vos. No guardamos nada en esta página.</small>
+      </form>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var f = document.getElementById('form-semilla');
+      if (!f) return;
+      f.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var d = new FormData(f);
+        var v = function (k) { return String(d.get(k) || '').trim(); };
+        var lineas = ['Hola, quiero que mi club sea parte del programa Clubes Semilla de RaketSense.', ''];
+        lineas.push('Nombre: ' + v('nombre'));
+        lineas.push('Club: ' + v('club'));
+        if (v('ciudad')) lineas.push('Ciudad: ' + v('ciudad'));
+        if (v('canchas')) lineas.push('Canchas: ' + v('canchas'));
+        lineas.push('Deporte: ' + v('deporte'));
+        var texto = lineas.join('\n');
+        var wa = f.dataset.whatsapp;
+        var destino = wa
+          ? 'https://wa.me/' + wa + '?text=' + encodeURIComponent(texto)
+          : 'mailto:' + f.dataset.mail + '?subject=' + encodeURIComponent('Programa Clubes Semilla') + '&body=' + encodeURIComponent(texto);
+        window.open(destino, '_blank', 'noopener');
+      });
+    })();
+  </script>
+</Base>

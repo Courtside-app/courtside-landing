@@ -1,0 +1,31 @@
+---
+// Hueco de foto. Busca public/img/<nombre>.(webp|jpg|jpeg|png) al construir:
+// si está, la muestra; si no, dibuja una vista aérea de canchas en su lugar.
+// Para cambiar una foto alcanza con dejar el archivo con ese nombre.
+import fs from 'node:fs';
+import path from 'node:path';
+import Cancha from './Cancha.astro';
+
+interface Props {
+  nombre: string;
+  alt: string;
+  variante?: 'polvo' | 'padel';
+  prioridad?: boolean;
+}
+const { nombre, alt, variante = 'polvo', prioridad = false } = Astro.props;
+const carpeta = path.join(process.cwd(), 'public', 'img');
+const ext = ['webp', 'jpg', 'jpeg', 'png'].find((e) => fs.existsSync(path.join(carpeta, `${nombre}.${e}`)));
+---
+
+{ext ? (
+  <img
+    class="foto"
+    src={`/img/${nombre}.${ext}`}
+    alt={alt}
+    loading={prioridad ? 'eager' : 'lazy'}
+    fetchpriority={prioridad ? 'high' : 'auto'}
+    decoding="async"
+  />
+) : (
+  <div class="foto foto-dibujo" role="img" aria-label={alt}><Cancha variante={variante} /></div>
+)}

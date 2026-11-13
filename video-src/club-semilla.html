@@ -1,0 +1,153 @@
+<!doctype html>
+<!--
+  Video del Programa Clubes Semilla (1920×1080, 34 s).
+  No se publica: es la fuente. `node video-src/grabar.cjs` lo recorre cuadro a
+  cuadro y arma public/video/club-semilla.mp4.
+  Cada escena tiene su inicio y su duración en milisegundos (--t, --d): para
+  cambiar el ritmo se tocan esos dos números y DURACION en grabar.cjs.
+-->
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      :root { --accent: #e2683a; --ink: #f5f5f3; --ink2: #d6d6d2; --muted: #a3a39e; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0a0a0a; }
+      body { font-family: 'Inter', 'Segoe UI', sans-serif; color: var(--ink); font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
+
+      /* Fondo: canchas de polvo vistas desde arriba, con paneo lento todo el video. */
+      .fondo { position: absolute; inset: -6%; animation: paneo 34000ms linear 0ms both; }
+      .fondo svg { width: 100%; height: 100%; display: block; }
+      @keyframes paneo { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.22) translate(-3%, -2%); } }
+      .velo {
+        position: absolute; inset: 0;
+        background:
+          linear-gradient(90deg, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.8) 48%, rgba(10, 10, 10, 0.35) 100%),
+          linear-gradient(0deg, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0) 45%);
+      }
+
+      /* Una escena entra, se queda y sale. --t = inicio, --d = duración. */
+      .escena { position: absolute; inset: 0; padding: 150px 170px; display: flex; flex-direction: column; justify-content: center; animation: escena var(--d) linear var(--t) both; }
+      @keyframes escena { 0% { opacity: 0; } 5% { opacity: 1; } 93% { opacity: 1; } 100% { opacity: 0; } }
+      /* Un elemento sube y aparece. --e = cuándo, contado desde el inicio del video. */
+      .sube { animation: sube 800ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--e) both; }
+      @keyframes sube { from { opacity: 0; transform: translateY(46px); } to { opacity: 1; transform: none; } }
+
+      .eyebrow { font-size: 30px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 34px; }
+      .eyebrow b { color: var(--accent); font-weight: 700; }
+      h1 { font-size: 124px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; max-width: 15ch; }
+      h1 span, .pregunta span { color: var(--accent); }
+      .sub { font-size: 46px; color: var(--ink2); margin-top: 38px; max-width: 30ch; line-height: 1.25; }
+
+      .pregunta { font-size: 96px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 26px; }
+
+      /* Panel de ejemplo, igual al de la landing. */
+      .panel { width: 1260px; margin-top: 54px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 18px; background: #121211; overflow: hidden; box-shadow: 0 50px 120px rgba(0, 0, 0, 0.6); }
+      .panel-barra { display: flex; justify-content: space-between; padding: 20px 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-size: 24px; color: var(--muted); }
+      .panel-barra b { color: var(--ink2); }
+      .panel-cuerpo { padding: 34px 30px 30px; }
+      .panel-cuerpo small { display: block; font-size: 21px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+      .panel-cuerpo h3 { font-size: 44px; letter-spacing: -0.02em; line-height: 1.18; }
+      .panel-cuerpo p { font-size: 28px; color: var(--ink2); margin-top: 12px; }
+      .kpis { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(255, 255, 255, 0.1); }
+      .kpi { padding: 26px 30px; border-right: 1px solid rgba(255, 255, 255, 0.1); }
+      .kpi:last-child { border-right: 0; }
+      .kpi .k { font-size: 19px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .kpi .v { font-size: 46px; font-weight: 700; letter-spacing: -0.02em; margin-top: 6px; }
+      .kpi .d { font-size: 21px; color: var(--muted); }
+      .kpi .neg { color: #f08a62; }
+
+      .lista { list-style: none; margin-top: 50px; display: grid; gap: 26px; }
+      .lista li { font-size: 60px; font-weight: 600; letter-spacing: -0.02em; padding-left: 78px; position: relative; }
+      .lista li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 46px; height: 6px; border-radius: 3px; background: var(--accent); }
+
+      .marca { display: flex; align-items: center; gap: 22px; font-size: 62px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 60px; }
+      .marca img { width: 78px; height: 78px; }
+      .marca span { color: var(--accent); }
+      .cta { display: inline-block; margin-top: 60px; padding: 26px 46px; border-radius: 14px; background: var(--accent); color: #fff; font-size: 46px; font-weight: 700; align-self: flex-start; }
+      .fino { font-size: 34px; color: var(--muted); margin-top: 30px; }
+    </style>
+  </head>
+  <body>
+    <div class="fondo" id="fondo"></div>
+    <div class="velo"></div>
+
+    <!-- 1 · Las preguntas (0–6,5 s) -->
+    <div class="escena" style="--t: 0ms; --d: 6500ms">
+      <p class="pregunta sube" style="--e: 300ms">¿Cuánto <span>ganó</span> tu club este mes?</p>
+      <p class="pregunta sube" style="--e: 2000ms">¿Qué canchas quedaron <span>vacías</span>?</p>
+      <p class="pregunta sube" style="--e: 3700ms">¿Quién <span>dejó de venir</span>?</p>
+    </div>
+
+    <!-- 2 · El Panel responde (6,5–14 s) -->
+    <div class="escena" style="--t: 6500ms; --d: 7500ms">
+      <p class="eyebrow sube" style="--e: 6800ms">Hoy lo contestás a ojo. <b>RaketSense te lo dice cada mañana.</b></p>
+      <div class="panel sube" style="--e: 7500ms">
+        <div class="panel-barra"><span><b>Panel</b> · Parque Tenis Club</span><span>Septiembre · actualizado 08:10</span></div>
+        <div class="panel-cuerpo">
+          <small>Cómo va el club</small>
+          <h3>Septiembre viene 6% abajo, con la ocupación de los martes a la noche en 40%.</h3>
+          <p>La academia sostiene el mes.</p>
+        </div>
+        <div class="kpis">
+          <div class="kpi sube" style="--e: 8600ms"><div class="k">Ingresos</div><div class="v">$ 13,6 M</div><div class="d neg">−6% vs agosto</div></div>
+          <div class="kpi sube" style="--e: 8900ms"><div class="k">Por cobrar</div><div class="v">$ 1,24 M</div><div class="d">reservas jugadas</div></div>
+          <div class="kpi sube" style="--e: 9200ms"><div class="k">Ocupación</div><div class="v">36%</div><div class="d">canchas activas</div></div>
+          <div class="kpi sube" style="--e: 9500ms"><div class="k">Resultado</div><div class="v">$ 4,1 M</div><div class="d">margen 30%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 · El programa (14–21 s) -->
+    <div class="escena" style="--t: 14000ms; --d: 7000ms">
+      <p class="eyebrow sube" style="--e: 14300ms"><b>Programa Clubes Semilla</b></p>
+      <h1 class="sube" style="--e: 14700ms">Buscamos pocos clubes para <span>empezar juntos.</span></h1>
+      <p class="sub sube" style="--e: 16200ms">Tenis y pádel · de 3 a 20 canchas</p>
+    </div>
+
+    <!-- 4 · Qué recibe el club (21–28,5 s) -->
+    <div class="escena" style="--t: 21000ms; --d: 7500ms">
+      <p class="eyebrow sube" style="--e: 21300ms">Qué recibe tu club</p>
+      <ul class="lista">
+        <li class="sube" style="--e: 21800ms">Precio diferencial para siempre</li>
+        <li class="sube" style="--e: 22900ms">Alta hecha juntos, en tu club</li>
+        <li class="sube" style="--e: 24000ms">Acompañamiento directo</li>
+        <li class="sube" style="--e: 25100ms">Tu voz en lo próximo que se construye</li>
+      </ul>
+    </div>
+
+    <!-- 5 · Cierre (28,5–34 s). No se desvanece: el último cuadro queda de portada. -->
+    <div class="escena" style="--t: 28500ms; --d: 5500ms; animation-name: entra">
+      <div class="marca sube" style="--e: 28800ms"><img src="../public/logo-mark.svg" alt="" /><div>Raket<span>Sense</span></div></div>
+      <h1 class="sube" style="--e: 29300ms">Nadie arranca <span>solo.</span></h1>
+      <div class="cta sube" style="--e: 30600ms">raketsense.com/club-semilla</div>
+      <p class="fino sube" style="--e: 31300ms">Cupos limitados.</p>
+    </div>
+    <style>@keyframes entra { 0% { opacity: 0; } 7% { opacity: 1; } 100% { opacity: 1; } }</style>
+
+    <script>
+      // Mismo dibujo que src/components/Cancha.astro (vista aérea de canchas de polvo).
+      (function () {
+        var W = 512, H = 256, SEP = 44, cols = 6, filas = 7, tonos = ['#c4582e', '#bb5129', '#cc6236'];
+        var g = '';
+        for (var i = 0; i < cols * filas; i++) {
+          var x = (i % cols) * (W + SEP), y = Math.floor(i / cols) * (H + SEP);
+          var tono = tonos[(i * 7 + Math.floor(i / cols)) % tonos.length];
+          g += '<g transform="translate(' + x + ' ' + y + ')"><rect width="' + W + '" height="' + H + '" rx="4" fill="' + tono + '"/>' +
+            '<g fill="none" stroke="#fff" stroke-opacity="0.92" stroke-width="2.5">' +
+            '<rect x="89.5" y="51" width="333" height="154"/>' +
+            '<line x1="89.5" y1="70" x2="422.5" y2="70"/><line x1="89.5" y1="186" x2="422.5" y2="186"/>' +
+            '<line x1="166" y1="70" x2="166" y2="186"/><line x1="346" y1="70" x2="346" y2="186"/>' +
+            '<line x1="166" y1="128" x2="346" y2="128"/><line x1="256" y1="42" x2="256" y2="214" stroke-width="3.5"/>' +
+            '</g></g>';
+        }
+        document.getElementById('fondo').innerHTML =
+          '<svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice"><rect width="1920" height="1080" fill="#15110e"/>' +
+          '<g transform="rotate(-16 960 540) translate(-620 -420)">' + g + '</g></svg>';
+      })();
+    </script>
+  </body>
+</html>

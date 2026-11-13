@@ -1,0 +1,290 @@
+---
+import { adminAppUrl, demoUrl, helloHref } from '../lib/contacto';
+
+interface Props {
+  title: string;
+  description: string;
+  ogDescription?: string;
+}
+const { title, description, ogDescription = description } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:type" content="website" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Sin JavaScript no se esconde nada: la aparición al bajar es un extra. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <style is:global>
+      /* Mismo sistema que el panel: negro, un solo acento naranja, hairlines,
+         radios chicos, números tabulares. El color marca lo accionable. */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg: #ffffff;
+        --surface: #fafafa;
+        --surface2: #f3f3f2;
+        --border: #e6e6e4;
+        --hair: #ededeb;
+        --ink: #0a0a0a;
+        --ink2: #3d3d3b;
+        --muted: #7a7a76;
+        --accent: #e2683a;
+        --accent-ink: #b84f26;
+        --accent-soft: rgba(226, 104, 58, 0.12);
+        --track: #e9e9e7;
+        --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0a0a0a;
+          --surface: #121211;
+          --surface2: #1a1a19;
+          --border: #262625;
+          --hair: #1f1f1e;
+          --ink: #f2f2f0;
+          --ink2: #c9c9c5;
+          --muted: #8a8a86;
+          --accent: #e2683a;
+          --accent-ink: #f08a62;
+          --accent-soft: rgba(226, 104, 58, 0.18);
+          --track: #2a2a29;
+        }
+      }
+      /* Bloques que van sobre foto o sobre negro: oscuros en los dos temas. */
+      .sobre-oscuro {
+        --bg: #0a0a0a;
+        --surface: #121211;
+        --surface2: #1a1a19;
+        --border: rgba(255, 255, 255, 0.22);
+        --hair: rgba(255, 255, 255, 0.12);
+        --ink: #f5f5f3;
+        --ink2: #d6d6d2;
+        --muted: #a3a39e;
+        --accent-ink: #f08a62;
+        --accent-soft: rgba(226, 104, 58, 0.2);
+        color: var(--ink);
+        background: #0a0a0a;
+      }
+
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: var(--font);
+        color: var(--ink);
+        background: var(--bg);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        text-wrap: pretty;
+        font-variant-numeric: tabular-nums;
+      }
+      a { color: inherit; }
+      img, svg, video { display: block; max-width: 100%; }
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+      .eyebrow {
+        font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem;
+      }
+      h2 { font-size: clamp(1.6rem, 3.2vw, 2.3rem); letter-spacing: -0.025em; line-height: 1.12; margin-bottom: 0.6rem; max-width: 24ch; }
+      .lead { color: var(--ink2); font-size: 1.05rem; max-width: 60ch; }
+
+      /* ── NAV ─────────────────────────────────────────────── */
+      .nav {
+        position: sticky; top: 0; z-index: 20;
+        background: color-mix(in srgb, var(--bg) 92%, transparent);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--hair);
+      }
+      .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+      .logo { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; }
+      .logo img { width: 26px; height: 26px; }
+      .logo .side { color: var(--accent); }
+      .nav-links { display: flex; gap: 1.25rem; align-items: center; font-size: 0.9rem; }
+      .nav-links a { text-decoration: none; color: var(--ink2); }
+      .nav-links a:hover { color: var(--ink); }
+      .nav-links a.btn-primary, .nav-links a.btn-primary:hover { color: #fff; }
+      @media (max-width: 760px) { .nav-links .hide-sm { display: none; } }
+
+      .btn {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        padding: 0.6rem 1.1rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem;
+        text-decoration: none; border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+        transition: background 120ms, border-color 120ms, transform 120ms;
+        cursor: pointer; font-family: inherit;
+      }
+      .btn:hover { background: var(--surface2); }
+      .btn:active { transform: translateY(1px); }
+      .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .btn-primary:hover { background: #cf5a2e; border-color: #cf5a2e; }
+      .btn-lg { padding: 0.85rem 1.5rem; font-size: 1rem; }
+      .sobre-oscuro .btn:not(.btn-primary) { background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(4px); }
+      .sobre-oscuro .btn:not(.btn-primary):hover { background: rgba(255, 255, 255, 0.14); }
+
+      /* ── FOTOS ───────────────────────────────────────────── */
+      .foto { width: 100%; height: 100%; object-fit: cover; }
+      .foto-dibujo { overflow: hidden; }
+      .foto-dibujo .cancha { width: 100%; height: 100%; }
+
+      /* ── PORTADA (siempre oscura, con foto de fondo) ─────── */
+      .hero { position: relative; isolation: isolate; overflow: hidden; padding: 6rem 0 11rem; }
+      .hero.hero-corta { padding-bottom: 5.5rem; }
+      .hero-media { position: absolute; inset: 0; z-index: -2; }
+      .hero-media .foto { animation: paneo 28s ease-in-out infinite alternate; transform-origin: 70% 40%; }
+      .hero::after {
+        content: ''; position: absolute; inset: 0; z-index: -1;
+        background:
+          linear-gradient(90deg, rgba(10, 10, 10, 0.94) 0%, rgba(10, 10, 10, 0.78) 42%, rgba(10, 10, 10, 0.28) 100%),
+          linear-gradient(0deg, rgba(10, 10, 10, 0.96) 0%, rgba(10, 10, 10, 0) 38%);
+      }
+      @keyframes paneo { from { transform: scale(1.02); } to { transform: scale(1.14) translate(-1.5%, -1%); } }
+      .pill {
+        display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.25rem 0.6rem; margin-bottom: 1.75rem;
+        padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 999px;
+        font-size: 0.92rem; color: var(--ink); text-decoration: none; background: var(--accent-soft);
+        transition: background 120ms;
+      }
+      .pill:hover { background: rgba(226, 104, 58, 0.32); }
+      .pill b { color: var(--accent-ink); font-weight: 600; }
+      .hero h1 { font-size: clamp(2.3rem, 5.6vw, 4rem); line-height: 1.02; letter-spacing: -0.035em; max-width: 15ch; }
+      .hero h1 span { color: var(--accent); }
+      .hero .lead { margin: 1.4rem 0 2.1rem; font-size: 1.15rem; max-width: 52ch; }
+      .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+      .hero-note { margin-top: 1.1rem; font-size: 0.85rem; color: var(--muted); }
+      @media (max-width: 640px) {
+        .hero { padding: 4rem 0 9rem; }
+        .hero::after {
+          background:
+            linear-gradient(90deg, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0.72) 100%),
+            linear-gradient(0deg, rgba(10, 10, 10, 0.96) 0%, rgba(10, 10, 10, 0) 38%);
+        }
+      }
+
+      /* ── SECCIONES ───────────────────────────────────────── */
+      section { padding: 3.75rem 0; }
+      section.primera { padding-top: 3rem; }
+      section + section { border-top: 1px solid var(--hair); }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--hair); border: 1px solid var(--hair); border-radius: 7px; overflow: hidden; margin-top: 2rem; }
+      .cell { background: var(--bg); padding: 1.25rem; }
+      .cell h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
+      .cell p { font-size: 0.9rem; color: var(--ink2); }
+      .cell .tag { display: inline-block; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft); padding: 0.15rem 0.45rem; border-radius: 4px; margin-bottom: 0.6rem; }
+      @media (max-width: 860px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 560px) { .grid-3 { grid-template-columns: 1fr; } }
+
+      .steps { counter-reset: s; margin-top: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+      .steps.steps-4 { grid-template-columns: repeat(4, 1fr); }
+      .step { position: relative; padding-top: 2.4rem; }
+      .step::before {
+        counter-increment: s; content: counter(s);
+        position: absolute; top: 0; left: 0; width: 1.8rem; height: 1.8rem;
+        border-radius: 999px; background: var(--ink); color: var(--bg);
+        display: grid; place-items: center; font-weight: 700; font-size: 0.85rem;
+      }
+      .step h3 { font-size: 1rem; margin-bottom: 0.3rem; }
+      .step p { color: var(--ink2); font-size: 0.92rem; }
+      @media (max-width: 860px) { .steps.steps-4 { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 720px) { .steps, .steps.steps-4 { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+      /* Lista con raya de acento (qué incluye, qué recibe) */
+      .lista { list-style: none; display: grid; gap: 0.5rem; font-size: 0.95rem; color: var(--ink2); }
+      .lista li { padding-left: 1.4rem; position: relative; }
+      .lista li::before { content: '—'; color: var(--accent); position: absolute; left: 0; }
+
+      /* ── APARICIÓN AL BAJAR ──────────────────────────────── */
+      .js .aparece { opacity: 0; transform: translateY(18px); transition: opacity 600ms ease, transform 600ms ease; }
+      .js .aparece.visto { opacity: 1; transform: none; }
+      .js .aparece.t1 { transition-delay: 90ms; }
+      .js .aparece.t2 { transition-delay: 180ms; }
+      .js .aparece.t3 { transition-delay: 270ms; }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .js .aparece { opacity: 1; transform: none; transition: none; }
+        .hero-media .foto { animation: none !important; }
+        .vida-card, .marco { transition: none !important; }
+      }
+
+      /* ── WHATSAPP FLOTANTE ───────────────────────────────── */
+      .wa {
+        position: fixed; right: 16px; bottom: 16px; z-index: 30;
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        padding: 0.7rem 1rem; border-radius: 999px; text-decoration: none;
+        background: var(--ink); color: var(--bg); font-weight: 600; font-size: 0.88rem;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28); transition: transform 150ms;
+      }
+      .wa:hover { transform: translateY(-2px); }
+      .wa svg { width: 18px; height: 18px; fill: currentColor; }
+      @media (max-width: 560px) { .wa span { display: none; } .wa { padding: 0.8rem; } }
+
+      /* ── PIE ─────────────────────────────────────────────── */
+      footer { border-top: 1px solid var(--hair); padding: 2rem 0 5rem; font-size: 0.85rem; color: var(--muted); }
+      .foot { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+      .foot-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+      footer a { color: var(--ink2); text-decoration: none; }
+      footer a:hover { color: var(--ink); }
+    </style>
+  </head>
+
+  <body>
+    <nav class="nav">
+      <div class="wrap nav-inner">
+        <a href="/" class="logo">
+          <img src="/logo-mark.svg" alt="" width="26" height="26" />
+          <span>Raket<span class="side">Sense</span></span>
+        </a>
+        <div class="nav-links">
+          <a href="/#panel" class="hide-sm">El panel</a>
+          <a href="/#inteligencia" class="hide-sm">Inteligencia</a>
+          <a href="/#gestion" class="hide-sm">Gestión</a>
+          <a href="/club-semilla" class="hide-sm">Clubes Semilla</a>
+          <a href={adminAppUrl} class="hide-sm">Ingresar</a>
+          <a href={demoUrl} class="btn btn-primary">Probá la demo</a>
+        </div>
+      </div>
+    </nav>
+
+    <slot />
+
+    <footer>
+      <div class="wrap foot">
+        <span>© {year} RaketSense · Inteligencia para clubes de tenis y pádel</span>
+        <span class="foot-links">
+          <a href={demoUrl}>Demo</a>
+          <a href="/club-semilla">Clubes Semilla</a>
+          <a href={adminAppUrl}>Ingresar al panel</a>
+        </span>
+      </div>
+    </footer>
+
+    <a href={helloHref} class="wa" aria-label="Escribinos por WhatsApp">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-9l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" /></svg>
+      <span>Escribinos por WhatsApp</span>
+    </a>
+
+    <script is:inline>
+      (function () {
+        var els = document.querySelectorAll('.aparece');
+        if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('visto'); }); return; }
+        var io = new IntersectionObserver(function (entradas) {
+          entradas.forEach(function (en) {
+            if (en.isIntersecting) { en.target.classList.add('visto'); io.unobserve(en.target); }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+        els.forEach(function (e) { io.observe(e); });
+      })();
+    </script>
+  </body>
+</html>
