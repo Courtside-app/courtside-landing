@@ -97,6 +97,7 @@ Each CTA has its own WhatsApp message (`waitlistHref`, `helloHref`; the Clubes S
 - Two pages (home + `/club-semilla`) and fast: no framework JS, only two tiny inline scripts (reveal on scroll, form → WhatsApp). The form stores nothing: it builds the WhatsApp message.
 - The demo link is `demoUrl` in `src/lib/contacto.ts` (guided demo, a separate static site on Cloudflare Pages). Today it points to `raketsense-demo.pages.dev`; switch it to `https://demo.raketsense.com` once that domain answers 200 (the browser frame on the home shows whatever host `demoUrl` has).
 - No price and no «meses gratis» on the page (decided 12-nov-2026).
+- **Link preview (WhatsApp, LinkedIn): `public/og.png`**, 1200×630, wired in `Base.astro` (`og:image` must be an absolute URL, which is why `site` is set in `astro.config.mjs`). It carries the headline: if the headline or the brand changes, regenerate it with `node scripts/og.mjs`. WhatsApp caches the preview per URL; test a change with `raketsense.com/?v=2`.
 
 ## Deploy
 
