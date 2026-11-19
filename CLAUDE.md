@@ -94,10 +94,15 @@ Each CTA has its own WhatsApp message (`waitlistHref`, `helloHref`; the Clubes S
 - Lead with the answer, then the data — same as the Panel. The hero mock ("Cómo va el club") is text, not a screenshot, so it stays legible on mobile and in dark mode.
 - The **six questions** section mirrors `docs/strategy/README.md §7` in `courtside-admin`. If the Panel changes, change both.
 - No screenshots of the player app, no "reservá online", no "app para jugadores", no MercadoPago checkout.
-- Two pages (home + `/club-semilla`) and fast: no framework JS, only two tiny inline scripts (reveal on scroll, form → WhatsApp). The form stores nothing: it builds the WhatsApp message.
+- Two pages (home + `/club-semilla`) and fast: no framework JS, only three small inline scripts (reveal on scroll, form → WhatsApp, Sensei). The form stores nothing: it builds the WhatsApp message.
 - The demo link is `demoUrl` in `src/lib/contacto.ts` (guided demo, a separate static site on Cloudflare Pages): `https://demo.raketsense.com` since 13-nov-2026 (the browser frame on the home shows whatever host `demoUrl` has).
 - No price and no «meses gratis» on the page (decided 12-nov-2026).
+- **Sensei, the chat (F19b, nov 2026), is `src/components/Sensei.astro`** (included from `Base.astro`): a floating button bottom-right that opens a small chat about the product and always offers «Seguir por WhatsApp» with the first question prefilled.
+  - The answers come from the backend in `courtside-admin` (`POST {apiUrl}/publico/consultas`). **What the bot knows and what it must not say (price, player app, online booking) lives there**, in `apps/backend/src/modules/ia/publico/conocimiento-del-sitio.ts`: it mirrors this site. If the content of the page changes, change that file in the same piece of work.
+  - It starts hidden and shows only if `GET {apiUrl}/publico/consultas/estado` answers `{ disponible: true }`. Otherwise (bot off, backend down, old backend) the page keeps the WhatsApp pill of always. With Sensei on screen the pill is hidden (`.con-sensei .wa`): one floating element, never two.
+  - `apiUrl` (`src/lib/contacto.ts`) defaults to production; `PUBLIC_API_URL=http://localhost:3100/api npm run dev` points it elsewhere. A PR preview talks to production too, so it shows the chat only once production has the bot on.
+  - Text from the model is written with `textContent`, never as HTML. No framework, no dependency.
 
 ## Deploy
 
-Azure Static Web Apps (`swa-courtside-landing`, rg-courtside-prod). The workflow builds with `npm run build` and uploads `dist/`. No env vars. Custom domain: add it on the Azure resource, then update `adminAppUrl` in `src/lib/contacto.ts`.
+Azure Static Web Apps (`swa-courtside-landing`, rg-courtside-prod). The workflow builds with `npm run build` and uploads `dist/`. No env vars needed (`PUBLIC_API_URL` is optional and only for local work: see Sensei above). Custom domain: add it on the Azure resource, then update `adminAppUrl` in `src/lib/contacto.ts`.
