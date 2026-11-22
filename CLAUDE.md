@@ -17,7 +17,7 @@ This is one of 3 repos:
 ## Tech Stack
 
 - **Framework:** Astro (SSG — zero JS by default, SEO optimized)
-- **Styling:** Vanilla CSS in a `<style>` block (no Tailwind). Same visual system as the admin redesign (Sep 2026): near-black ink, **one** orange accent `#e2683a`, 1px hairlines, 5–7px radii, tabular numbers, light + dark via `prefers-color-scheme`.
+- **Styling:** Vanilla CSS in a `<style>` block (no Tailwind). Same visual system as the admin: **diseño B «Noche de pádel» (nov 2026)** — dark only (navy `#070e22`), lime `#d6f04a` = action and brand (the logo's dot is the ball; text on a lime button is `--sobre-accent`), celeste `--pos` = good news, coral `--neg` = needs attention (always with an arrow or text), Barlow Condensed uppercase for headings (`--font-titulo`) + Inter, 1px hairlines, 5–7px radii, tabular numbers. The hero photo is `public/img/portada.jpg` (the padel court, navy overlay). Tokens live in `src/layouts/Base.astro`; if the admin's `styles.css` changes a B color, change it here too.
 - **Deploy:** Azure Static Web Apps (Free) via `.github/workflows/azure-static-web-apps.yml`
 
 ## Project Structure
