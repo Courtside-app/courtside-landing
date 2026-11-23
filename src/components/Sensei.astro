@@ -1,0 +1,331 @@
+---
+// Sensei: el asistente de RaketSense en el sitio. Responde consultas sobre el
+// producto y pasa la charla a WhatsApp.
+//
+// - Las respuestas las da el backend (`POST {apiUrl}/publico/consultas`, en
+//   courtside-admin). Lo que el bot sabe y lo que no dice vive allá.
+// - Arranca escondido. Sólo aparece si el backend dice que hay bot
+//   (`GET …/estado`); si no responde o dice que no, queda el botón de WhatsApp
+//   de siempre. Con Sensei a la vista, ese botón se esconde (clase
+//   `con-sensei` en <html>): un solo flotante.
+// - Sin framework: un script en línea. El texto se escribe con `textContent`,
+//   nunca como HTML: lo redactó un modelo.
+import { apiUrl, contactWhatsApp } from '../lib/contacto';
+
+const sugerencias = [
+  '¿Qué es RaketSense?',
+  '¿Sirve para pádel?',
+  '¿Cómo es el alta?',
+  '¿Cuánto sale?',
+];
+---
+
+<div id="sensei" data-api={apiUrl} data-whatsapp={contactWhatsApp} hidden>
+  <button
+    type="button"
+    class="sensei-fab"
+    aria-haspopup="dialog"
+    aria-controls="sensei-panel"
+    aria-expanded="false"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2l1.9 5.6a3 3 0 0 0 1.9 1.9L21.4 11.4l-5.6 1.9a3 3 0 0 0-1.9 1.9L12 20.8l-1.9-5.6a3 3 0 0 0-1.9-1.9L2.6 11.4l5.6-1.9a3 3 0 0 0 1.9-1.9L12 2Z"></path>
+    </svg>
+    <span>Sensei</span>
+  </button>
+
+  <section
+    id="sensei-panel"
+    class="sensei-panel"
+    role="dialog"
+    aria-labelledby="sensei-titulo"
+    hidden
+  >
+    <header class="sensei-cabecera">
+      <div>
+        <h2 id="sensei-titulo">Sensei</h2>
+        <p>El asistente de RaketSense</p>
+      </div>
+      <button type="button" class="sensei-cerrar" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </header>
+
+    <div class="sensei-cuerpo" role="log" aria-live="polite">
+      <p class="sensei-msg es-sensei">Hola, soy Sensei. Contame de tu club o preguntame qué hace RaketSense.</p>
+      <div class="sensei-sugerencias">
+        {sugerencias.map((s) => <button type="button">{s}</button>)}
+      </div>
+    </div>
+
+    <footer class="sensei-pie">
+      <form class="sensei-form">
+        <textarea
+          rows="1"
+          maxlength="500"
+          placeholder="Escribí tu consulta"
+          aria-label="Tu consulta"
+          required></textarea>
+        <button type="submit" aria-label="Enviar la consulta">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"></path></svg>
+        </button>
+      </form>
+      <a class="sensei-wa" target="_blank" rel="noopener">Seguir por WhatsApp</a>
+      <small>Soy una IA: puedo equivocarme. No compartas datos personales.</small>
+    </footer>
+  </section>
+</div>
+
+<style is:global>
+  /* Con Sensei a la vista, el botón de WhatsApp se esconde: un solo flotante. */
+  .con-sensei .wa { display: none; }
+
+  .sensei-fab {
+    position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 30;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    height: 46px; padding: 0 1.2rem 0 1rem; border: 0; border-radius: 999px; cursor: pointer;
+    background: var(--accent); color: var(--sobre-accent); font-family: inherit; font-weight: 600; font-size: 0.92rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.28);
+    transition: background 120ms, transform 150ms;
+  }
+  .sensei-fab:hover { background: var(--accent-hover); transform: translateY(-2px); }
+  .sensei-fab:focus-visible, .sensei-panel button:focus-visible, .sensei-wa:focus-visible {
+    outline: 2px solid var(--ink); outline-offset: 2px;
+  }
+  .sensei-fab svg { width: 17px; height: 17px; fill: currentColor; }
+
+  .sensei-panel {
+    padding: 0; /* pisa el `section { padding }` de Base.astro */
+    position: fixed; right: 16px; bottom: 16px; z-index: 40;
+    width: 370px; max-width: calc(100vw - 32px);
+    height: min(580px, calc(100vh - 32px)); height: min(580px, calc(100dvh - 32px));
+    display: flex; flex-direction: column; overflow: hidden;
+    background: var(--surface); color: var(--ink);
+    border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 18px 50px rgba(0, 0, 0, 0.3);
+  }
+  .sensei-panel[hidden] { display: none; }
+
+  .sensei-cabecera {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 0.85rem 0.9rem 0.85rem 1.1rem; border-bottom: 1px solid var(--hair);
+  }
+  .sensei-cabecera h2 { font-size: 1.35rem; line-height: 1; margin: 0; letter-spacing: 0.02em; }
+  .sensei-cabecera p { font-size: 0.78rem; color: var(--muted); margin-top: 1px; }
+  .sensei-cerrar {
+    width: 32px; height: 32px; display: grid; place-items: center; flex-shrink: 0;
+    border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--ink2); cursor: pointer;
+  }
+  .sensei-cerrar:hover { background: var(--surface2); color: var(--ink); }
+  .sensei-cerrar svg, .sensei-form button svg {
+    width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .sensei-cuerpo {
+    flex: 1; overflow-y: auto; overscroll-behavior: contain;
+    padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  .sensei-msg {
+    max-width: 88%; padding: 0.6rem 0.8rem; border-radius: 10px;
+    font-size: 0.9rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .sensei-msg.es-sensei { align-self: flex-start; background: var(--surface2); color: var(--ink); border-bottom-left-radius: 3px; }
+  .sensei-msg.es-visita { align-self: flex-end; background: var(--accent); color: var(--sobre-accent); border-bottom-right-radius: 3px; }
+  .sensei-msg.es-error { align-self: flex-start; background: transparent; border: 1px solid var(--border); color: var(--ink2); }
+  .sensei-msg.es-espera { align-self: flex-start; background: var(--surface2); color: var(--muted); }
+
+  .sensei-sugerencias { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.2rem; }
+  .sensei-sugerencias button {
+    padding: 0.4rem 0.7rem; border: 1px solid var(--border); border-radius: 999px;
+    background: var(--bg); color: var(--ink2); font-family: inherit; font-size: 0.82rem; cursor: pointer;
+  }
+  .sensei-sugerencias button:hover { border-color: var(--accent); color: var(--accent-ink); }
+
+  .sensei-pie { padding: 0.75rem 1.1rem 0.85rem; border-top: 1px solid var(--hair); display: grid; gap: 0.55rem; }
+  .sensei-form { display: flex; align-items: flex-end; gap: 0.5rem; }
+  .sensei-form textarea {
+    flex: 1; resize: none; min-height: 40px; max-height: 110px; padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--ink);
+    font-family: inherit; font-size: 0.9rem; line-height: 1.4;
+  }
+  .sensei-form textarea:focus { outline: none; border-color: var(--accent); }
+  .sensei-form button {
+    width: 40px; height: 40px; flex-shrink: 0; display: grid; place-items: center;
+    border: 0; border-radius: 8px; background: var(--accent); color: var(--sobre-accent); cursor: pointer;
+  }
+  .sensei-form button:hover { background: var(--accent-hover); }
+  .sensei-form button:disabled { opacity: 0.5; cursor: default; }
+  .sensei-wa {
+    display: block; text-align: center; padding: 0.5rem; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--ink); font-size: 0.86rem; font-weight: 600; text-decoration: none;
+  }
+  .sensei-wa:hover { background: var(--surface2); }
+  .sensei-pie small { font-size: 0.72rem; color: var(--muted); text-align: center; }
+
+  @media (max-width: 560px) {
+    /* Pantalla entera. `inset: 0` y no 100vw/100vh: no se corre con la barra
+       de scroll ni con la barra del navegador del celular. */
+    .sensei-panel {
+      inset: 0; width: auto; max-width: none; height: auto;
+      border: 0; border-radius: 0;
+    }
+    /* 16px: por debajo de eso el iPhone hace zoom al enfocar el campo. */
+    .sensei-form textarea { font-size: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sensei-fab { transition: none; }
+    .sensei-fab:hover { transform: none; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var raiz = document.getElementById('sensei');
+    if (!raiz || !window.fetch) return;
+    var api = raiz.dataset.api;
+    var whatsapp = raiz.dataset.whatsapp;
+    var fab = raiz.querySelector('.sensei-fab');
+    var panel = raiz.querySelector('.sensei-panel');
+    var cuerpo = raiz.querySelector('.sensei-cuerpo');
+    var sugerencias = raiz.querySelector('.sensei-sugerencias');
+    var form = raiz.querySelector('.sensei-form');
+    var campo = form.querySelector('textarea');
+    var enviar = form.querySelector('button');
+    var wa = raiz.querySelector('.sensei-wa');
+
+    var MAX_MENSAJES = 8; // lo mismo que acepta el servidor
+    var NO_PUDE = 'No pude responder. Probá de nuevo o seguí por WhatsApp.';
+    var charla = []; // { rol: 'usuario' | 'asistente', texto }
+    var enviando = false;
+
+    // ¿Hay bot? Si no, o si el servidor no contesta, queda el WhatsApp de siempre.
+    fetch(api + '/publico/consultas/estado')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (estado) {
+        if (!estado || estado.disponible !== true) return;
+        raiz.hidden = false;
+        document.documentElement.classList.add('con-sensei');
+      })
+      .catch(function () {});
+
+    function linkDeWhatsApp() {
+      var primera = charla.filter(function (m) { return m.rol === 'usuario'; })[0];
+      var texto = 'Hola, vengo del chat de la web de RaketSense.';
+      if (primera) texto += ' Consulté: «' + primera.texto.slice(0, 200) + '»';
+      wa.href = whatsapp
+        ? 'https://wa.me/' + whatsapp + '?text=' + encodeURIComponent(texto)
+        : '/club-semilla#contacto';
+    }
+    linkDeWhatsApp();
+
+    function burbuja(texto, clase) {
+      var p = document.createElement('p');
+      p.className = 'sensei-msg ' + clase;
+      p.textContent = texto;
+      cuerpo.appendChild(p);
+      cuerpo.scrollTop = cuerpo.scrollHeight;
+      return p;
+    }
+
+    function abrir() {
+      panel.hidden = false;
+      fab.hidden = true;
+      fab.setAttribute('aria-expanded', 'true');
+      campo.focus();
+    }
+    function cerrar() {
+      panel.hidden = true;
+      fab.hidden = false;
+      fab.setAttribute('aria-expanded', 'false');
+      fab.focus();
+    }
+
+    function ultimos() {
+      var u = charla.slice(-MAX_MENSAJES);
+      while (u.length && u[0].rol !== 'usuario') u.shift();
+      return u;
+    }
+
+    function preguntar(texto) {
+      texto = (texto || '').trim();
+      if (!texto || enviando) return;
+      enviando = true;
+      enviar.disabled = true;
+      if (sugerencias) sugerencias.hidden = true;
+      charla.push({ rol: 'usuario', texto: texto });
+      burbuja(texto, 'es-visita');
+      linkDeWhatsApp();
+      var espera = burbuja('Sensei está escribiendo…', 'es-espera');
+
+      var corte = window.AbortController ? new AbortController() : null;
+      var reloj = corte ? setTimeout(function () { corte.abort(); }, 45000) : null;
+      var aviso = NO_PUDE;
+
+      fetch(api + '/publico/consultas', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ mensajes: ultimos() }),
+        signal: corte ? corte.signal : undefined,
+      })
+        .then(function (r) {
+          return r.json().then(
+            function (cuerpoJson) { return { ok: r.ok, datos: cuerpoJson }; },
+            function () { return { ok: false, datos: null }; }
+          );
+        })
+        .then(function (r) {
+          if (r.ok && r.datos && typeof r.datos.respuesta === 'string') {
+            charla.push({ rol: 'asistente', texto: r.datos.respuesta });
+            espera.className = 'sensei-msg es-sensei';
+            espera.textContent = r.datos.respuesta;
+            return;
+          }
+          // El aviso del servidor ya viene en castellano (tope del día, límite por minuto).
+          if (r.datos && typeof r.datos.message === 'string') aviso = r.datos.message;
+          throw new Error('sin respuesta');
+        })
+        .catch(function () {
+          // La consulta que no tuvo respuesta no vuelve a viajar.
+          charla.pop();
+          espera.className = 'sensei-msg es-error';
+          espera.textContent = aviso;
+        })
+        .then(function () {
+          if (reloj) clearTimeout(reloj);
+          enviando = false;
+          enviar.disabled = false;
+          cuerpo.scrollTop = cuerpo.scrollHeight;
+        });
+    }
+
+    fab.addEventListener('click', abrir);
+    raiz.querySelector('.sensei-cerrar').addEventListener('click', cerrar);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden) cerrar();
+    });
+    if (sugerencias) {
+      sugerencias.addEventListener('click', function (e) {
+        var boton = e.target.closest('button');
+        if (boton) preguntar(boton.textContent);
+      });
+    }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var texto = campo.value;
+      if (!texto.trim() || enviando) return;
+      campo.value = '';
+      campo.style.height = '';
+      preguntar(texto);
+    });
+    campo.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        form.requestSubmit ? form.requestSubmit() : enviar.click();
+      }
+    });
+    campo.addEventListener('input', function () {
+      campo.style.height = 'auto';
+      campo.style.height = Math.min(campo.scrollHeight, 110) + 'px';
+    });
+  })();
+</script>

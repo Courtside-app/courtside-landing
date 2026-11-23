@@ -1,5 +1,6 @@
 ---
 import { adminAppUrl, demoUrl, helloHref } from '../lib/contacto';
+import Sensei from '../components/Sensei.astro';
 
 interface Props {
   title: string;
@@ -261,6 +262,9 @@ const year = new Date().getFullYear();
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-9l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" /></svg>
       <span>Escribinos por WhatsApp</span>
     </a>
+
+    <!-- Sensei: aparece (y esconde el botón de arriba) sólo si el backend tiene el bot. -->
+    <Sensei />
 
     <script is:inline>
       (function () {
