@@ -6,7 +6,7 @@
 
 This repo is the **marketing landing page**: a static Astro site that presents the product and drives visitors to **ask for a demo** (onboarding is assisted, one club at a time — there is no public signup).
 
-> Scope and doctrine live in `courtside-admin/docs/strategy/README.md` (E1–E11). Read it before changing the copy: the landing must not promise the player app, online self-service booking or MercadoPago SaaS checkout — those are out of scope on purpose.
+> Scope and doctrine live in `courtside-admin/docs/strategy/README.md` (E1–E11). Read it before changing the copy: the landing must not promise open signup for players, an app-store app, notifications or MercadoPago / online payment — those are out of scope on purpose. **The «App de clientes» is real (since Nov 2026) and is shown** (section `#app-clientes`): the club invites each client, who asks for a turn from the phone. Describe only what `courtside-admin` CLAUDE.md «App de clientes» says it does.
 
 This is one of 3 repos:
 
@@ -93,7 +93,7 @@ Each CTA has its own WhatsApp message (`waitlistHref`, `helloHref`; the Clubes S
 - Spanish (rioplatense: "vos", "mostrador", "socio"). Target: clubs in Argentina, 3–20 courts.
 - Lead with the answer, then the data — same as the Panel. The hero mock ("Cómo va el club") is text, not a screenshot, so it stays legible on mobile and in dark mode.
 - The **six questions** section mirrors `docs/strategy/README.md §7` in `courtside-admin`. If the Panel changes, change both.
-- No screenshots of the player app, no "reservá online", no "app para jugadores", no MercadoPago checkout.
+- No "reservá online" for anyone, no open player signup, no app-store app, no MercadoPago checkout. The App de clientes section uses an HTML phone mock (text, like the Panel mock), not a screenshot.
 - Two pages (home + `/club-semilla`) and fast: no framework JS, only three small inline scripts (reveal on scroll, form → WhatsApp, Sensei). The form stores nothing: it builds the WhatsApp message.
 - The demo link is `demoUrl` in `src/lib/contacto.ts` (guided demo, a separate static site on Cloudflare Pages): `https://demo.raketsense.com` since 13-nov-2026 (the browser frame on the home shows whatever host `demoUrl` has).
 - No price and no «meses gratis» on the page (decided 12-nov-2026).

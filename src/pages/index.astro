@@ -101,6 +101,27 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
     .price-card .lista { margin: 1.1rem 0 1.5rem; }
     .price-card .btn { margin-top: auto; align-self: flex-start; }
     @media (max-width: 760px) { .price { grid-template-columns: 1fr; } .price-card p { min-height: 0; } }
+
+    /* App de clientes: texto + un celular dibujado en HTML (no captura), como el Panel de la portada. */
+    .app-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: center; }
+    .app-grid .lista { margin-top: 1.5rem; }
+    .celu {
+      width: min(300px, 100%); margin-inline: auto; border: 1px solid var(--border); border-radius: 28px;
+      background: var(--surface); padding: 14px; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+    }
+    .celu-pantalla { border-radius: 18px; background: var(--bg); border: 1px solid var(--hair); overflow: hidden; }
+    .celu-cabeza { padding: 0.9rem 1rem 0.7rem; border-bottom: 1px solid var(--hair); }
+    .celu-cabeza small { display: block; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .celu-cabeza b { font-family: var(--font-titulo); font-size: 1.45rem; text-transform: uppercase; line-height: 1.05; }
+    .turnos { display: grid; gap: 6px; padding: 0.8rem 1rem; }
+    .turno { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding: 0.55rem 0.7rem; border: 1px solid var(--hair); border-radius: 6px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+    .turno b { color: var(--ink); font-weight: 600; }
+    .turno.elegido { border-color: var(--accent); background: var(--accent-soft); }
+    .turno.ocupado { opacity: 0.45; }
+    .celu-boton { margin: 0.2rem 1rem 0.9rem; text-align: center; font-weight: 600; font-size: 0.9rem; padding: 0.6rem; border-radius: 6px; background: var(--accent); color: var(--sobre-accent); }
+    .pedido { margin: 0 1rem 1rem; padding: 0.65rem 0.75rem; border: 1px dashed var(--border); border-radius: 6px; font-size: 0.8rem; color: var(--ink2); }
+    .pedido b { display: block; color: var(--ink); font-size: 0.85rem; }
+    @media (max-width: 860px) { .app-grid { grid-template-columns: 1fr; gap: 2rem; } }
   </style>
 
   <!-- PORTADA -->
@@ -249,7 +270,7 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
     <div class="wrap">
       <p class="eyebrow aparece">Gestión integral</p>
       <h2 class="aparece">La captura del dato, sin cambiar cómo trabaja tu gente.</h2>
-      <p class="lead aparece">El socio sigue reservando por WhatsApp o en el mostrador. El staff lo carga en segundos, y de ahí sale todo lo demás.</p>
+      <p class="lead aparece">El socio sigue reservando por WhatsApp o en el mostrador, o pide su turno desde el celular. El staff lo carga en segundos, y de ahí sale todo lo demás.</p>
       <div class="grid-3 aparece">
         <div class="cell"><span class="tag">Reservas</span><h3>Grilla por cancha y hora</h3><p>Eventuales, fijos semanales, clases y academia en la misma grilla. Sin doble reserva: lo garantiza la base, no la memoria del mostrador.</p></div>
         <div class="cell"><span class="tag">Caja</span><h3>Apertura, cobros, arqueo y cierre Z</h3><p>Efectivo, transferencia, tarjeta o cuenta corriente. Cada peso queda en un libro que no se edita: se revierte.</p></div>
@@ -257,6 +278,40 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
         <div class="cell"><span class="tag">Canchas</span><h3>Tarifas por franja y mantenimiento</h3><p>Precio por categoría y horario. Tareas de mantenimiento con costo, que entran al resultado del club.</p></div>
         <div class="cell"><span class="tag">Profesores y academia</span><h3>Clases, grupos y cuotas</h3><p>Disponibilidad, clases particulares, grupos por edad y nivel con cuota mensual. Lo que cobra el club y lo que le paga al profe.</p></div>
         <div class="cell"><span class="tag">Torneos</span><h3>Inscripción, cuadro y programación</h3><p>Eliminación o round robin. Cada partido programado ocupa la cancha de verdad, y la inscripción se cobra en caja.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP DE CLIENTES: el club invita a cada cliente. Sin registro abierto, sin tiendas, sin cobro online. -->
+  <section id="app-clientes">
+    <div class="wrap app-grid">
+      <div>
+        <p class="eyebrow aparece">App de clientes</p>
+        <h2 class="aparece">Tus clientes piden turno desde el celular.</h2>
+        <p class="lead aparece">
+          Invitás a cada cliente desde su ficha y le llega el enlace por WhatsApp. Ve los horarios
+          libres, pide su turno y el pedido aparece al instante en la grilla del club.
+        </p>
+        <ul class="lista aparece">
+          <li>Entra sólo quien vos invitás</li>
+          <li>Confirmás cada pedido desde el mostrador, o dejás que se confirme solo</li>
+          <li>Vos ponés las reglas: anticipación, turnos a la vez y hasta cuándo se cancela</li>
+          <li>Nunca muestra quién ocupa una cancha</li>
+          <li>Se instala en el celular desde el navegador, sin bajar nada de una tienda</li>
+        </ul>
+      </div>
+      <div class="celu aparece t1" aria-label="Ejemplo de la app de clientes">
+        <div class="celu-pantalla">
+          <div class="celu-cabeza"><small>Las Tipas Pádel</small><b>Elegí tu turno · jueves</b></div>
+          <div class="turnos">
+            <div class="turno"><span><b>18:00</b> · Cancha 3</span><span>Libre</span></div>
+            <div class="turno elegido"><span><b>19:00</b> · Cancha 1</span><span>Libre</span></div>
+            <div class="turno ocupado"><span><b>20:30</b> · Cancha 1</span><span>Ocupada</span></div>
+            <div class="turno"><span><b>20:30</b> · Cancha 2</span><span>Libre</span></div>
+          </div>
+          <div class="celu-boton">Pedir turno</div>
+          <div class="pedido"><b>Tu pedido · Jueves 19:00 · Cancha 1</b>Esperando que el club lo confirme</div>
+        </div>
       </div>
     </div>
   </section>
