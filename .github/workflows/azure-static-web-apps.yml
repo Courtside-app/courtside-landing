@@ -23,6 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: Azure/static-web-apps-deploy@v1
+        env:
+          # La vista previa de un PR le pregunta a desarrollo (dev.raketsense.com);
+          # master (raketsense.com) usa el valor por defecto de contacto.ts: producción.
+          PUBLIC_API_URL: ${{ github.event_name == 'pull_request' && 'https://dev.raketsense.com/api' || '' }}
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}

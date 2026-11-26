@@ -1,5 +1,6 @@
 ---
 import { adminAppUrl, demoUrl, helloHref } from '../lib/contacto';
+import Sensei from '../components/Sensei.astro';
 
 interface Props {
   title: string;
@@ -25,61 +26,49 @@ const year = new Date().getFullYear();
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <!-- Sin JavaScript no se esconde nada: la aparición al bajar es un extra. -->
     <script is:inline>document.documentElement.classList.add('js');</script>
     <style is:global>
-      /* Mismo sistema que el panel: negro, un solo acento naranja, hairlines,
-         radios chicos, números tabulares. El color marca lo accionable. */
+      /* Mismo sistema que el panel: diseño B «Noche de pádel» (nov 2026).
+         Azul noche; lima = la acción y la marca (el punto del logo es la
+         pelota); celeste = lo bueno; coral = lo que hay que atender. Un solo
+         tema, oscuro: el lima no se lee sobre blanco. Barlow Condensed para
+         títulos, Inter para leer. */
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
       :root {
-        --bg: #ffffff;
-        --surface: #fafafa;
-        --surface2: #f3f3f2;
-        --border: #e6e6e4;
-        --hair: #ededeb;
-        --ink: #0a0a0a;
-        --ink2: #3d3d3b;
-        --muted: #7a7a76;
-        --accent: #e2683a;
-        --accent-ink: #b84f26;
-        --accent-soft: rgba(226, 104, 58, 0.12);
-        --track: #e9e9e7;
+        color-scheme: dark;
+        --bg: #070e22;
+        --surface: #0f1a38;
+        --surface2: #142247;
+        --border: #22325e;
+        --hair: #1b2a52;
+        --ink: #eef2ff;
+        --ink2: #b7c2e0;
+        --muted: #8d9ac2;
+        --accent: #d6f04a;
+        /* En la landing, «accent-ink» es el acento como texto (sobre azul el
+           lima se lee); lo que va encima de un botón lima es «sobre-accent». */
+        --accent-ink: #d6f04a;
+        --sobre-accent: #0a1226;
+        --accent-hover: #e2f56e;
+        --accent-soft: rgba(214, 240, 74, 0.12);
+        --pos: #5cc8ff;
+        --neg: #ff6b57;
+        --track: #16244a;
         --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --font-titulo: 'Barlow Condensed', 'Arial Narrow', sans-serif;
       }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0a0a0a;
-          --surface: #121211;
-          --surface2: #1a1a19;
-          --border: #262625;
-          --hair: #1f1f1e;
-          --ink: #f2f2f0;
-          --ink2: #c9c9c5;
-          --muted: #8a8a86;
-          --accent: #e2683a;
-          --accent-ink: #f08a62;
-          --accent-soft: rgba(226, 104, 58, 0.18);
-          --track: #2a2a29;
-        }
-      }
-      /* Bloques que van sobre foto o sobre negro: oscuros en los dos temas. */
+      /* Bloques que van sobre foto: los mismos azules, con bordes que se ven
+         sobre la imagen. */
       .sobre-oscuro {
-        --bg: #0a0a0a;
-        --surface: #121211;
-        --surface2: #1a1a19;
-        --border: rgba(255, 255, 255, 0.22);
-        --hair: rgba(255, 255, 255, 0.12);
-        --ink: #f5f5f3;
-        --ink2: #d6d6d2;
-        --muted: #a3a39e;
-        --accent-ink: #f08a62;
-        --accent-soft: rgba(226, 104, 58, 0.2);
+        --border: rgba(238, 242, 255, 0.22);
+        --hair: rgba(238, 242, 255, 0.12);
         color: var(--ink);
-        background: #0a0a0a;
+        background: var(--bg);
       }
 
       html { scroll-behavior: smooth; }
@@ -99,7 +88,7 @@ const year = new Date().getFullYear();
         font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
         text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem;
       }
-      h2 { font-size: clamp(1.6rem, 3.2vw, 2.3rem); letter-spacing: -0.025em; line-height: 1.12; margin-bottom: 0.6rem; max-width: 24ch; }
+      h2 { font-family: var(--font-titulo); font-weight: 700; text-transform: uppercase; font-size: clamp(2rem, 4.2vw, 3.1rem); letter-spacing: 0; line-height: 0.98; margin-bottom: 0.8rem; max-width: 22ch; }
       .lead { color: var(--ink2); font-size: 1.05rem; max-width: 60ch; }
 
       /* ── NAV ─────────────────────────────────────────────── */
@@ -116,7 +105,7 @@ const year = new Date().getFullYear();
       .nav-links { display: flex; gap: 1.25rem; align-items: center; font-size: 0.9rem; }
       .nav-links a { text-decoration: none; color: var(--ink2); }
       .nav-links a:hover { color: var(--ink); }
-      .nav-links a.btn-primary, .nav-links a.btn-primary:hover { color: #fff; }
+      .nav-links a.btn-primary, .nav-links a.btn-primary:hover { color: var(--sobre-accent); }
       @media (max-width: 760px) { .nav-links .hide-sm { display: none; } }
 
       .btn {
@@ -128,8 +117,8 @@ const year = new Date().getFullYear();
       }
       .btn:hover { background: var(--surface2); }
       .btn:active { transform: translateY(1px); }
-      .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-      .btn-primary:hover { background: #cf5a2e; border-color: #cf5a2e; }
+      .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--sobre-accent); }
+      .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
       .btn-lg { padding: 0.85rem 1.5rem; font-size: 1rem; }
       .sobre-oscuro .btn:not(.btn-primary) { background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(4px); }
       .sobre-oscuro .btn:not(.btn-primary):hover { background: rgba(255, 255, 255, 0.14); }
@@ -147,8 +136,8 @@ const year = new Date().getFullYear();
       .hero::after {
         content: ''; position: absolute; inset: 0; z-index: -1;
         background:
-          linear-gradient(90deg, rgba(10, 10, 10, 0.94) 0%, rgba(10, 10, 10, 0.78) 42%, rgba(10, 10, 10, 0.28) 100%),
-          linear-gradient(0deg, rgba(10, 10, 10, 0.96) 0%, rgba(10, 10, 10, 0) 38%);
+          linear-gradient(90deg, rgba(7, 14, 34, 0.96) 0%, rgba(7, 14, 34, 0.82) 42%, rgba(7, 14, 34, 0.22) 100%),
+          linear-gradient(0deg, rgba(7, 14, 34, 1) 0%, rgba(7, 14, 34, 0) 38%);
       }
       @keyframes paneo { from { transform: scale(1.02); } to { transform: scale(1.14) translate(-1.5%, -1%); } }
       .pill {
@@ -157,9 +146,9 @@ const year = new Date().getFullYear();
         font-size: 0.92rem; color: var(--ink); text-decoration: none; background: var(--accent-soft);
         transition: background 120ms;
       }
-      .pill:hover { background: rgba(226, 104, 58, 0.32); }
+      .pill:hover { background: rgba(214, 240, 74, 0.22); }
       .pill b { color: var(--accent-ink); font-weight: 600; }
-      .hero h1 { font-size: clamp(2.3rem, 5.6vw, 4rem); line-height: 1.02; letter-spacing: -0.035em; max-width: 15ch; }
+      .hero h1 { font-family: var(--font-titulo); font-weight: 700; text-transform: uppercase; font-size: clamp(3rem, 7.4vw, 5.6rem); line-height: 0.92; letter-spacing: 0; max-width: 14ch; }
       .hero h1 span { color: var(--accent); }
       .hero .lead { margin: 1.4rem 0 2.1rem; font-size: 1.15rem; max-width: 52ch; }
       .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
@@ -168,8 +157,8 @@ const year = new Date().getFullYear();
         .hero { padding: 4rem 0 9rem; }
         .hero::after {
           background:
-            linear-gradient(90deg, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0.72) 100%),
-            linear-gradient(0deg, rgba(10, 10, 10, 0.96) 0%, rgba(10, 10, 10, 0) 38%);
+            linear-gradient(90deg, rgba(7, 14, 34, 0.9) 0%, rgba(7, 14, 34, 0.72) 100%),
+            linear-gradient(0deg, rgba(7, 14, 34, 1) 0%, rgba(7, 14, 34, 0) 38%);
         }
       }
 
@@ -273,6 +262,9 @@ const year = new Date().getFullYear();
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-9l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" /></svg>
       <span>Escribinos por WhatsApp</span>
     </a>
+
+    <!-- Sensei: aparece (y esconde el botón de arriba) sólo si el backend tiene el bot. -->
+    <Sensei />
 
     <script is:inline>
       (function () {

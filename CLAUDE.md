@@ -17,7 +17,7 @@ This is one of 3 repos:
 ## Tech Stack
 
 - **Framework:** Astro (SSG — zero JS by default, SEO optimized)
-- **Styling:** Vanilla CSS in a `<style>` block (no Tailwind). Same visual system as the admin redesign (Sep 2026): near-black ink, **one** orange accent `#e2683a`, 1px hairlines, 5–7px radii, tabular numbers, light + dark via `prefers-color-scheme`.
+- **Styling:** Vanilla CSS in a `<style>` block (no Tailwind). Same visual system as the admin: **diseño B «Noche de pádel» (nov 2026)** — dark only (navy `#070e22`), lime `#d6f04a` = action and brand (the logo's dot is the ball; text on a lime button is `--sobre-accent`), celeste `--pos` = good news, coral `--neg` = needs attention (always with an arrow or text), Barlow Condensed uppercase for headings (`--font-titulo`) + Inter, 1px hairlines, 5–7px radii, tabular numbers. The hero photo is `public/img/portada.jpg` (the padel court, navy overlay). Tokens live in `src/layouts/Base.astro`; if the admin's `styles.css` changes a B color, change it here too.
 - **Deploy:** Azure Static Web Apps (Free) via `.github/workflows/azure-static-web-apps.yml`
 
 ## Project Structure
@@ -94,10 +94,15 @@ Each CTA has its own WhatsApp message (`waitlistHref`, `helloHref`; the Clubes S
 - Lead with the answer, then the data — same as the Panel. The hero mock ("Cómo va el club") is text, not a screenshot, so it stays legible on mobile and in dark mode.
 - The **six questions** section mirrors `docs/strategy/README.md §7` in `courtside-admin`. If the Panel changes, change both.
 - No screenshots of the player app, no "reservá online", no "app para jugadores", no MercadoPago checkout.
-- Two pages (home + `/club-semilla`) and fast: no framework JS, only two tiny inline scripts (reveal on scroll, form → WhatsApp). The form stores nothing: it builds the WhatsApp message.
+- Two pages (home + `/club-semilla`) and fast: no framework JS, only three small inline scripts (reveal on scroll, form → WhatsApp, Sensei). The form stores nothing: it builds the WhatsApp message.
 - The demo link is `demoUrl` in `src/lib/contacto.ts` (guided demo, a separate static site on Cloudflare Pages): `https://demo.raketsense.com` since 13-nov-2026 (the browser frame on the home shows whatever host `demoUrl` has).
 - No price and no «meses gratis» on the page (decided 12-nov-2026).
+- **Sensei, the chat (F19b, nov 2026), is `src/components/Sensei.astro`** (included from `Base.astro`): a floating button bottom-right that opens a small chat about the product and always offers «Seguir por WhatsApp» with the first question prefilled.
+  - The answers come from the backend in `courtside-admin` (`POST {apiUrl}/publico/consultas`). **What the bot knows and what it must not say (price, player app, online booking) lives there**, in `apps/backend/src/modules/ia/publico/conocimiento-del-sitio.ts`: it mirrors this site. If the content of the page changes, change that file in the same piece of work.
+  - It starts hidden and shows only if `GET {apiUrl}/publico/consultas/estado` answers `{ disponible: true }`. Otherwise (bot off, backend down, old backend) the page keeps the WhatsApp pill of always. With Sensei on screen the pill is hidden (`.con-sensei .wa`): one floating element, never two.
+  - `apiUrl` (`src/lib/contacto.ts`) defaults to production; `PUBLIC_API_URL=http://localhost:3100/api npm run dev` points it elsewhere. A PR preview talks to **development** (`dev.raketsense.com`, set by the workflow as `PUBLIC_API_URL`); `master` (raketsense.com) talks to production. Development has the bot on (`IA_BOT_PUBLICO=true` in `ca-courtside-dev`, since 23-nov-2026); production does not yet.
+  - Text from the model is written with `textContent`, never as HTML. No framework, no dependency.
 
 ## Deploy
 
-Azure Static Web Apps (`swa-courtside-landing`, rg-courtside-prod). The workflow builds with `npm run build` and uploads `dist/`. No env vars. Custom domain: add it on the Azure resource, then update `adminAppUrl` in `src/lib/contacto.ts`.
+Azure Static Web Apps (`swa-courtside-landing`, rg-courtside-prod). The workflow builds with `npm run build` and uploads `dist/`. `PUBLIC_API_URL` is set by the workflow only for PR previews (development); `master` builds without it (production). Custom domain: add it on the Azure resource, then update `adminAppUrl` in `src/lib/contacto.ts`.

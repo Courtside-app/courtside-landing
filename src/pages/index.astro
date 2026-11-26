@@ -24,15 +24,15 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
     .verdict-bar b { color: var(--ink2); font-weight: 600; }
     .verdict-body { padding: 1.25rem 1rem 1rem; }
     .verdict-body .eyebrow { margin-bottom: 0.4rem; }
-    .verdict-body h3 { font-size: clamp(1.15rem, 2.4vw, 1.5rem); letter-spacing: -0.02em; line-height: 1.2; }
+    .verdict-body h3 { font-family: var(--font-titulo); font-weight: 600; font-size: clamp(1.5rem, 3vw, 2.1rem); letter-spacing: 0; line-height: 1.08; }
     .verdict-body p { color: var(--ink2); margin-top: 0.35rem; font-size: 0.95rem; }
     .kpis { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--hair); }
     .kpi { padding: 0.9rem 1rem; border-right: 1px solid var(--hair); }
     .kpi:last-child { border-right: 0; }
     .kpi .k { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-    .kpi .v { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 0.15rem; }
+    .kpi .v { font-family: var(--font-titulo); font-size: 2rem; font-weight: 700; letter-spacing: 0; line-height: 1.05; margin-top: 0.2rem; }
     .kpi .d { font-size: 0.75rem; color: var(--muted); }
-    .kpi .neg { color: var(--accent-ink); }
+    .kpi .neg { color: var(--neg); font-weight: 600; }
     .todo { border-top: 1px solid var(--hair); }
     .todo-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--hair); font-size: 0.9rem; }
     .todo-row:last-child { border-bottom: 0; }
@@ -48,11 +48,11 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
     .vida { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 2rem; }
     .vida-card { border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: var(--surface); transition: transform 250ms ease, border-color 250ms ease; }
     .vida-card:hover { transform: translateY(-4px); border-color: var(--accent); }
-    .vida-captura { aspect-ratio: 16 / 10; overflow: hidden; background: #0a0a0a; border-bottom: 1px solid var(--hair); }
+    .vida-captura { aspect-ratio: 16 / 10; overflow: hidden; background: var(--bg); border-bottom: 1px solid var(--hair); }
     .vida-captura :global(.foto) { transition: transform 900ms ease; }
     .vida-card:hover .vida-captura :global(.foto) { transform: scale(1.05); }
     .vida-texto { padding: 1rem 1.1rem 1.15rem; }
-    .vida-texto b { display: block; font-size: 1.15rem; letter-spacing: -0.02em; }
+    .vida-texto b { display: block; font-family: var(--font-titulo); font-size: 1.6rem; text-transform: uppercase; letter-spacing: 0; line-height: 1.05; }
     .vida-texto span { font-size: 0.9rem; color: var(--ink2); }
     @media (max-width: 760px) { .vida { grid-template-columns: 1fr; } }
 
@@ -69,7 +69,7 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
     .demo .lead { margin: 0.5rem 0 1.5rem; }
     .demo-pasos { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.75rem; }
     .demo-pasos span { font-size: 0.8rem; padding: 0.25rem 0.6rem; border: 1px solid var(--border); border-radius: 999px; color: var(--ink2); }
-    .marco { display: block; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: #121211; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5); text-decoration: none; transition: transform 250ms ease; }
+    .marco { display: block; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; background: var(--surface); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5); text-decoration: none; transition: transform 250ms ease; }
     .marco:hover { transform: translateY(-4px); }
     .marco-barra { display: flex; align-items: center; gap: 6px; padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--hair); font-size: 0.72rem; color: var(--muted); }
     .marco-barra i { width: 9px; height: 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); }
@@ -81,7 +81,7 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
     .quienes { display: grid; grid-template-columns: 1fr 1.1fr; gap: 2.5rem; align-items: center; }
     /* Las dos caras: el club y la IA, lado a lado. */
     .caras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .cara { aspect-ratio: 4 / 5; border-radius: 9px; overflow: hidden; background: #0a0a0a; }
+    .cara { aspect-ratio: 4 / 5; border-radius: 9px; overflow: hidden; background: var(--bg); }
     .cara-club :global(.foto) { object-position: 20% center; }
     .cara-ia :global(.foto) { object-position: 12% 20%; }
     .quienes .lead { margin-top: 0.5rem; }
@@ -105,7 +105,7 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
 
   <!-- PORTADA -->
   <header class="hero sobre-oscuro">
-    <div class="hero-media"><Foto nombre="portada" alt="Canchas de polvo de ladrillo vistas desde arriba" prioridad /></div>
+    <div class="hero-media"><Foto nombre="portada" alt="Paletas y pelotas sobre una cancha de pádel azul" prioridad /></div>
     <div class="wrap">
       <a href="/club-semilla" class="pill"><b>Próximo lanzamiento</b> Programa Clubes Semilla abierto →</a>
       <p class="eyebrow">Tenis · Pádel · Gestión con inteligencia artificial</p>
@@ -136,7 +136,7 @@ import { demoUrl, waitlistHref } from '../lib/contacto';
         <p>Hay $ 1.240.000 jugados y sin cobrar. La academia sostiene el mes.</p>
       </div>
       <div class="kpis">
-        <div class="kpi"><div class="k">Ingresos</div><div class="v">$ 13,6 M</div><div class="d neg">−6% vs agosto</div></div>
+        <div class="kpi"><div class="k">Ingresos</div><div class="v">$ 13,6 M</div><div class="d neg">↓ 6% vs agosto</div></div>
         <div class="kpi"><div class="k">Por cobrar</div><div class="v">$ 1,24 M</div><div class="d">reservas jugadas</div></div>
         <div class="kpi"><div class="k">Ocupación</div><div class="v">36%</div><div class="d">sobre canchas activas</div></div>
         <div class="kpi"><div class="k">Resultado</div><div class="v">$ 4,1 M</div><div class="d">margen 30%</div></div>
